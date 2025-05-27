@@ -1,0 +1,72 @@
+# Dependencias
+node_modules/
+package-lock.json
+
+# Variables de entorno
+.env
+.env.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Archivos de usuario
+*.sublime-*
+*.code-workspace
+
+# Archivos de configuración local
+config.local.json
+
+# Archivos de base de datos
+*.db
+*.sqlite
+
+# Archivos de respaldo
+*.bak
+*.backup
+
+# Archivos de desarrollo
+coverage/
+.nyc_output/
+
+# Archivos de dependencias
+jspm_packages/
+
+# Archivos de TypeScript
+*.tsbuildinfo
+
+# Archivos de producción
+dist/
+build/
+out/
+
+# Archivos de documentación generados
+docs/
+
+# Archivos de entorno virtual
+venv/
+env/
+
+# Archivos de sistema operativo
+.DS_Store
+Thumbs.db

@@ -1,0 +1,273 @@
+**📦 BotCompletoV1 - Documento Base**
+
+---
+
+## 🧭 Propósito del Documento
+
+Este archivo forma parte de la carpeta `PassQuirk - DataBase > BotCompletoV1` y es la nueva versión oficial y reestructurada del bot **PassQuirk RPG**. Toda la información aquí tiene prioridad sobre versiones anteriores y busca eliminar incoherencias.
+
+---
+
+## 🧨 CAMBIO IMPORTANTE EN LA ESTRUCTURA DE INICIO
+
+> **El bot ya no se inicia con múltiples comandos (/start, /tutorial, mención)**.
+
+### ✅ Nuevo Inicio ÚNICO: `/passquirkrpg`
+
+- Este comando será el punto de partida exclusivo del juego.
+    
+- Ejecutar `/passquirkrpg` mostrará un embed visual llamativo con:
+    
+    - 🐲 Botón: **"Iniciar Aventura"** (en amarillo brillante)
+        
+
+---
+
+## 👤 Guía Inicial y Creación del Personaje (fusionada con Tutorial)
+
+Al pulsar el botón **"Iniciar Aventura"**, se activa el flujo guiado por el NPC **ElSabio** 🧙‍♂️.
+
+> **⚠️ Importante:** Si el bot no tiene la imagen de ElSabio, debe pedírsela al desarrollador. Nombre de la imagen: `NPC - ElSabio`
+
+### ✍️ ElSabio inicia la experiencia con:
+
+1. Mensaje decorado de bienvenida.
+    
+2. Pregunta por el **nombre del jugador** (input por botón).
+    
+3. Pregunta por la **apariencia del personaje** (opción de subir imagen o generar mediante IA con estilo **pixelart**).
+    
+4. Elección de género.
+    
+5. Historia personal.
+    
+6. Elección de clase.
+    
+7. Elección de región inicial.
+    
+
+> 🔧 La generación de imagen debe hacerse a través de un generador gratuito (estilo pixelart). El agente debe ofrecer opciones y guía.
+## 🌍 Historia Base del Mundo (Contada por ElSabio)
+
+> _Esta historia aún está en desarrollo._ ElSabio introduce los fundamentos:
+
+### 🌌 Ambientación General
+
+- Mundo mágico y fantástico conectado por **portales interdimensionales**.
+    
+- Diversos enemigos por rareza y dificultad.
+    
+
+### 🏰 Reinos Principales
+
+#### 🔴 Reino de Akai
+
+- Especializado en **guerreros** y combates cuerpo a cuerpo.
+    
+- Territorio montañoso y volcánico.
+    
+- Sociedad jerárquica basada en la fuerza.
+    
+- Habitantes: Humanos robustos, bestias humanoides, razas bárbaras.
+    
+- Sede de los mejores campos de entrenamiento militar.
+    
+
+#### 🟢 Reino de Say
+
+- Famoso por su dominio de la **magia** y la **sabiduría ancestral**.
+    
+- Bosques encantados y ruinas arcanas.
+    
+- Sistema de castas basado en conocimiento mágico.
+    
+- Habitantes: Elfos de alto rango, magos, sabios, humanos ilustrados.
+    
+- Alberga bibliotecas prohibidas y escuelas de magia avanzada.
+    
+
+#### 🟡 Reino de Masai
+
+- Núcleo del **comercio**, los **artesanos** y la diplomacia.
+    
+- Regiones desérticas y grandes mercados.
+    
+- Economía influenciada por gremios y casas nobles.
+    
+- Habitantes: Humanos comerciantes, criaturas adaptadas al desierto, alquimistas.
+    
+- Cuna de objetos mágicos únicos y artefactos legendarios.
+    
+
+> 🔸 Cada reino tiene su propio **gobierno, cultura y gremios**. 🔹 Todos comercian entre sí y tienen alianzas frágiles.
+
+### 🟣 Reino Demonio y PassQuirks
+
+- Zona prohibida e inaccesible por medios normales.
+    
+- Se dice que alberga al temido **Rey Demonio**, el enemigo final.
+    
+- Las **10 PassQuirk** son **esferas moradas legendarias** esparcidas por el mundo.
+    
+    - Eligen a su portador.
+        
+    - Potencian cualquier Quirk a niveles inhumanos.
+        
+    - Al morir un portador, la esfera se transfiere o se pierde temporalmente.
+        
+
+### 🐉 Dragones y Jerarquía de Enemigos
+
+- **Dragones Clase Baja**: Poca conciencia, comunes, pero difíciles de encontrar.
+    
+- **Dragones Clase Media**: Uno puede aniquilar ciudades.
+    
+- **Dragones Clase Alta**: Pueden conquistar planetas.
+    
+- Solo combinando las 10 PassQuirk se puede enfrentar al **Rey Demonio**.
+    
+
+> 🔺 Aún no existe la descripción visual de los reinos ni los dragones (🖼️ Imágenes pendientes). [[Historia]]
+
+---
+
+## 👤 CREACIÓN DEL PERSONAJE (guiado por ElSabio)
+
+Flujo completo de diálogo:
+
+- Nombre del personaje
+    
+- Apariencia (imagen subida o generada por IA)
+    
+- Género
+    
+- Historia personal
+    
+- Clase (botones):
+    
+    1. Arquero 🎯
+        
+    2. Ninja 🥷
+        
+    3. Espadachín 🗡️
+        
+    4. Guerrero 🛡️
+        
+    5. Mago 🧙‍♂️
+        
+- Región inicial (botones):
+    
+    1. Reino Rojo: Akai 🌋
+        
+    2. Reino Verde: Say 🌲
+        
+    3. Reino Amarillo: Masai 🏜️
+        
+    4. Bosque Misterioso 🌑
+        
+    5. Cueva Oscura 🕳️
+        
+
+Después de elegir todo esto, se guarda el perfil y se avanza al siguiente paso: [[Creación del Personaje]]
+
+---
+
+## 🗡️ Tutorial de Combate Interactivo
+
+> ElSabio activa el combate contra un **Slime** para enseñar los fundamentos.
+
+### 🔁 Desarrollo del combate:
+
+1. Quirk aleatorio + Habilidad rápida inicial.
+    
+2. Turno 1 del jugador:
+    
+    - Botón: Atacar / Defender
+        
+3. Turno del enemigo (Slime ataca).
+    
+4. Inventario:
+    
+    - Botón: Usar poción de vida.
+        
+5. Turno 2 del jugador:
+    
+    - Botón: Atacar final → Victoria.
+        
+
+> ✅ Estilo visual tipo Pokémon por turnos con embeds y botones interactivos.
+---
+
+## 🏁 Cierre del Tutorial
+
+🎉 Aparece mensaje decorado de bienvenida a **Space Central**, ciudad base y corazón del mundo PassQuirk.
+
+## 🏁 Cierre del Tutorial
+
+🎉 El jugador accede a **Space Central**, la ciudad base del mundo.
+
+### ✨ Mensaje final:
+
+> "¡Has superado el tutorial! Comienza tu verdadera aventura en Space Central."
+
+Botones sugeridos:
+
+- Crear Personaje (si no lo hizo antes)
+    
+- Explorar
+    
+- Ayuda
+---
+
+## 📝 PENDIENTES POR DESARROLLAR
+
+- Historia completa del mundo 🌍
+    
+- Historia de personajes clave como ElSabio y Paray Sikatu
+    
+- Historia expandida de las 10 PassQuirk 🟣
+    
+- Imágenes:
+    
+    - NPC - ElSabio
+        
+    - NPC - Paray Sikatu
+        
+    - Las 10 PassQuirk
+        
+    - Reinos visuales (Akai, Say, Masai)
+        
+    - Dragones de clase baja/media/alta
+        
+
+---
+
+## 🎨 Normas Visuales para Todo el Bot
+
+- Todos los mensajes deben ser **embeds** decorados (emojis, colores).
+    
+- Se usarán **botones** interactivos para cualquier acción del jugador.
+    
+- El diseño se apoya en imágenes del sistema. Si falta alguna, el bot debe pedirla por su nombre.
+    
+
+---
+
+## 🛠️ ¿Qué sigue?
+
+Podemos ahora crear los módulos:
+
+- `Inicio`
+    
+- `Historia`
+    
+- `Sistema de Combate`
+    
+- `Comandos`
+    
+- `Paray Sikatu`
+    
+- `PassQuirk`
+    
+
+¿Con cuál seguimos? 😎

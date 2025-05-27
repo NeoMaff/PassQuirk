@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassQuirk RPG - Aventura Épica en Discord</title>
+    <meta name="description" content="Sumérgete en el mundo de PassQuirk RPG, un juego de rol por turnos en Discord con combates épicos, mazmorras y una rica historia.">
+    <meta name="author" content="PassQuirk Team">
+    <meta name="keywords" content="PassQuirk, RPG, Discord, Juego de Rol, Aventura, Turnos, Combate, Mazmorras">
+    
+    <!-- Favicon y meta tags -->
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+    <meta name="theme-color" content="#0F172A">
+    <meta property="og:title" content="PassQuirk RPG - Aventura Épica en Discord">
+    <meta property="og:description" content="Sumérgete en el mundo de PassQuirk RPG, un juego de rol por turnos en Discord con combates épicos, mazmorras y una rica historia.">
+    <meta property="og:image" content="https://passquirk.com/assets/images/og-image.jpg">
+    <meta property="og:url" content="https://passquirk.com">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Preload de recursos críticos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" onload="this.rel='stylesheet'" 
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap">
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Scripts diferidos -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
+    <script>
+        // Configuración global
+        window.AppConfig = {
+            apiUrl: 'https://api.passquirk.com',
+            discord: {
+                clientId: '1374808784039579668',
+                redirectUri: window.location.origin + '/auth/callback',
+                scopes: ['identify', 'email', 'guilds']
+            },
+            version: '1.0.0'
+        };
+        
+        // Cargador
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loader');
+            if (loader) {
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                    }, 300);
+                }, 500);
+            }
+            
+            // Header scroll effect
+            const header = document.getElementById('header');
+            if (header) {
+                window.addEventListener('scroll', function() {
+                    if (window.scrollY > 50) {
+                        header.classList.add('scrolled');
+                    } else {
+                        header.classList.remove('scrolled');
+                    }
+                });
+            }
+            
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menu-toggle');
+            const navMenu = document.getElementById('nav-menu');
+            if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', function() {
+                    navMenu.classList.toggle('active');
+                    menuToggle.classList.toggle('active');
+                });
+            }
+        });
+    </script>
+</head>
+<body class="bg-bg-darker text-text-primary" id="app">
+    <!-- Cargador -->
+    <div id="loader" class="loader" role="status" aria-live="polite">
+        <div class="loader-content">
+            <div class="spinner" aria-hidden="true"></div>
+            <h2 class="loading-text">Cargando <span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></h2>
+            <span class="sr-only">Cargando la aplicación, por favor espere...</span>
+        </div>
+    </div>
+
+    <!-- Barra de Navegación -->
+    <header id="header" class="header" role="banner">
+        <div class="container">
+            <nav class="nav" aria-label="Navegación principal">
+                <a href="#inicio" class="logo" aria-label="Inicio - PassQuirk RPG">
+                    <img src="assets/images/logo.png" 
+                         alt="" 
+                         class="logo-img" 
+                         width="40" 
+                         height="40" 
+                         aria-hidden="true">
+                    <span class="logo-text">PassQuirk <span class="text-gold">RPG</span></span>
+                </a>
+                
+                <button id="mobileMenuBtn" 
+                        class="mobile-menu" 
+                        aria-label="Menú de navegación" 
+                        aria-expanded="false" 
+                        aria-controls="navLinks"
+                        aria-haspopup="true">
+                    <span class="menu-line"></span>
+                    <span class="menu-line"></span>
+                    <span class="menu-line"></span>
+                    <span class="sr-only">Menú</span>
+                </button>
+
+                <div class="nav-links" id="navLinks" role="menu">
+                    <a href="#inicio" 
+                       class="nav-link active" 
+                       data-section="inicio"
+                       role="menuitem">Inicio</a>
+                    <a href="#caracteristicas" 
+                       class="nav-link" 
+                       data-section="caracteristicas"
+                       role="menuitem">Características</a>
+                    <a href="#clases" 
+                       class="nav-link" 
+                       data-section="clases"
+                       role="menuitem">Clases</a>
+                    <a href="#mundo" 
+                       class="nav-link" 
+                       data-section="mundo"
+                       role="menuitem">Mundo</a>
+                    <a href="#comandos" 
+                       class="nav-link" 
+                       data-section="comandos"
+                       role="menuitem">Comandos</a>
+                    <a href="#faq" 
+                       class="nav-link" 
+                       data-section="faq"
+                       role="menuitem">FAQ</a>
+                    <a href="https://discord.gg/tu-invitacion" 
+                       class="btn btn-primary ml-4" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       role="button">
+                        <i class="fab fa-discord mr-2" aria-hidden="true"></i> 
+                        <span>Unirse a Discord</span>
+                    </a>
+                </div>
+                
+                <button id="authBtn" 
+                        class="btn btn-outline ml-4" 
+                        aria-label="Iniciar sesión en PassQuirk"
+                        aria-haspopup="dialog">
+                    <i class="fas fa-sign-in-alt mr-2" aria-hidden="true"></i> 
+                    <span>Iniciar Sesión</span>
+                </button>
+            </nav>
+
+                    </ul>
+                    
+                    <div class="nav-cta">
+                        <a href="https://discord.gg/tu-invitacion" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-discord"></i> Unirse a Discord
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Sección Hero -->
+    <section id="inicio" class="hero" aria-labelledby="hero-heading">
+        <div class="container">
+            <div class="hero-content">
+                <span class="hero-subtitle">Bienvenido a</span>
+                <h1 id="hero-heading" class="hero-title">
+                    <span class="sr-only">PassQuirk RPG</span>
+                    <span aria-hidden="true">PassQuirk <span class="text-primary">RPG</span></span>
+                </h1>
+                <p class="hero-description">
+                    Un épico juego de rol por turnos en Discord donde tu imaginación es el límite. 
+                    Crea tu personaje, explora mundos asombrosos y vive aventuras inolvidables.
+                </p>
+                
+                <div class="hero-cta">
+                    <a href="https://discord.gg/tu-invitacion" 
+                       class="btn btn-primary btn-lg" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       aria-label="Unirse a Discord para jugar a PassQuirk RPG">
+                        <i class="fab fa-discord" aria-hidden="true"></i> 
+                        <span>Jugar Ahora</span>
+                    </a>
+                    <a href="#caracteristicas" 
+                       class="btn btn-outline btn-lg"
+                       aria-label="Ver características de PassQuirk RPG">
+                        <i class="fas fa-info-circle" aria-hidden="true"></i> 
+                        <span>Saber Más</span>
+                    </a>
+                </div>
+                
+                <div class="hero-stats" aria-label="Estadísticas de la comunidad">
+                    <div class="stat-item">
+                        <span class="stat-number" aria-label="10 mil jugadores">10K+</span>
+                        <span class="stat-label">Jugadores</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" aria-label="5 clases">5</span>
+                        <span class="stat-label">Clases</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" aria-label="3 reinos">3</span>
+                        <span class="stat-label">Reinos</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-image">
+                <img src="assets/images/hero-character.png" 
+                     alt="" 
+                     class="img-fluid"
+                     width="600"
+                     height="600"
+                     loading="lazy"
+                     aria-hidden="true">
+                <div class="hero-badge" aria-hidden="true">
+                    <span class="badge-text">¡Nuevo!</span>
+                    <span>Actualización 2.0</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-shape" aria-hidden="true">
+            <svg viewBox="0 0 1440 320" aria-hidden="true" focusable="false">
+                <path d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Panel Principal -->
+    <div id="main-panel" class="main-panel hidden">
+        <!-- Barra Lateral -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/images/logo.png" alt="PassQuirk RPG" class="sidebar-logo">
+                <h2>PassQuirk <span class="text-gold">RPG</span></h2>
+                <span>PassQuirk RPG</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-home"></i> Inicio
+                </a>
+                <a href="#" class="nav-item" data-section="character">
+                    <i class="fas fa-user"></i> Personaje
+                </a>
+                <a href="#" class="nav-item" data-section="inventory">
+                    <i class="fas fa-backpack"></i> Inventario
+                </a>
+                <a href="#" class="nav-item" data-section="quests">
+                    <i class="fas fa-scroll"></i> Misiones
+                </a>
+                <a href="#" class="nav-item" data-section="shop">
+                    <i class="fas fa-shopping-cart"></i> Tienda
+                </a>
+                <a href="#" class="nav-item" data-section="economy">
+                    <i class="fas fa-coins"></i> Economía
+                </a>
+                <a href="#" class="nav-item" data-section="admin" id="admin-nav" style="display: none;">
+                    <i class="fas fa-shield-alt"></i> Administración
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-panel">
+                    <img id="user-avatar" src="" alt="Avatar" class="user-avatar">
+                    <div class="user-info">
+                        <span id="username">Cargando...</span>
+                        <span id="user-tag" class="user-tag">#0000</span>
+                    </div>
+                    <button id="user-menu-btn" class="user-menu-btn">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="main-content">
+            <!-- Barra Superior -->
+            <div class="top-bar">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar...">
+                </div>
+                <div class="top-bar-actions">
+                    <button class="notification-btn" id="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="music-player" id="music-player">
+                        <div class="music-info">
+                            <span class="music-title">Tema de Exploración</span>
+                            <span class="music-artist">PassQuirk OST</span>
+                        </div>
+                        <div class="music-controls">
+                            <button class="music-btn" id="prev-track">
+                                <i class="fas fa-step-backward"></i>
+                            </button>
+                            <button class="music-btn" id="play-pause">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="music-btn" id="next-track">
+                                <i class="fas fa-step-forward"></i>
+                            </button>
+                            <div class="volume-control">
+                                <i class="fas fa-volume-up"></i>
+                                <input type="range" id="volume" min="0" max="100" value="70">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Contenido Dinámico -->
+            <div class="content-area" id="content-area">
+                <!-- El contenido se cargará dinámicamente aquí -->
+                <div class="welcome-message">
+                    <h1>Bienvenido a <span class="text-gold">PassQuirk RPG</span></h1>
+                    <p>Selecciona una sección del menú para comenzar tu aventura.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Panel de Notificaciones -->
+    <div class="notifications-panel" id="notifications-panel">
+        <div class="notifications-header">
+            <h3>Notificaciones</h3>
+            <button class="close-notifications" id="close-notifications">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="notifications-list">
+            <!-- Las notificaciones se cargarán aquí -->
+        </div>
+    </div>
+
+    <!-- Menú de Usuario -->
+    <!-- Menú de Usuario -->
+    <div class="user-menu" id="user-menu">
+        <div class="user-menu-header">
+            <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" id="user-avatar" class="user-avatar">
+            <div class="user-info">
+                <span id="username" class="username">Usuario</span>
+                <span id="user-tag" class="user-tag">#0000</span>
+            </div>
+        </div>
+        <div class="user-menu-body">
+            <a href="#" class="user-menu-item">
+                <i class="fas fa-user"></i> Perfil
+            </a>
+        <a href="#" class="user-menu-item">
+            <i class="fas fa-cog"></i> Configuración
+        </a>
+        <div class="divider"></div>
+        <a href="#" id="logout-btn" class="user-menu-item text-danger">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </a>
+    </div>
+
+    <!-- Sección Hero (Oculta por defecto) -->
+    <section id="inicio" class="hero hidden">
+        <div class="container">
+            <div class="hero-content">
+                <span class="hero-subtitle">¡Bienvenido a</span>
+                <h1 class="hero-title">PassQuirk <span class="text-gold">RPG</span></h1>
+                <p class="hero-description">
+                    Embárcate en una épica aventura en el mundo de Discord. Crea tu personaje, lucha contra monstruos, 
+                    completa misiones épicas y descubre los secretos de los legendarios PassQuirks en este RPG por turnos.
+                </p>
+                <div class="hero-buttons">
+                    <a href="https://discord.gg/tu-invitacion" class="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-play mr-2"></i> Empezar Aventura
+                    </a>
+                    <a href="#caracteristicas" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-info-circle mr-2"></i> Saber Más
+                    </a>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="10000">0</span>
+                        <span class="stat-label">Jugadores</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="50">0</span>
+                        <span class="stat-label">Clases</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="100">0</span>
+                        <span class="stat-label">Misiones</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-image">
+                <div class="hero-image-container">
+                    <img src="assets/images/hero-character.png" alt="Personaje de PassQuirk RPG" class="hero-character">
+                    <div class="hero-glow"></div>
+                </div>
+                <div class="hero-badges">
+                    <span class="badge"><i class="fas fa-fire"></i> En Tendencia</span>
+                    <span class="badge"><i class="fas fa-star"></i> Mejor RPG 2024</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-scroll">
+            <span>Desplázate</span>
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Características -->
+    <section id="caracteristicas" class="section features" aria-labelledby="features-heading">
+        <div class="container">
+            <div class="section-header" aria-labelledby="features-subtitle features-heading features-description">
+                <span id="features-subtitle" class="section-subtitle">Explora las</span>
+                <h2 id="features-heading" class="section-title">
+                    Características <span class="text-gold">Principales</span>
+                </h2>
+                <p id="features-description" class="section-description">
+                    Descubre todo lo que hace de PassQuirk RPG una experiencia única en Discord
+                </p>
+            </div>
+
+            <div class="features-grid" role="list" aria-label="Lista de características">
+                <!-- Característica 1 -->
+                <div class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">
+                        <i class="fas fa-swords"></i>
+                    </div>
+                    <h3 class="feature-title">Combate por Turnos</h3>
+                    <p class="feature-description">
+                        Sistema de combate estratégico por turnos con más de 100 habilidades únicas.
+                    </p>
+                </div>
+
+                <!-- Característica 2 -->
+                <div class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">
+                        <i class="fas fa-dungeon"></i>
+                    </div>
+                    <h3 class="feature-title">Mazmorras Épicas</h3>
+                    <p class="feature-description">
+                        Explora mazmorras generadas proceduralmente con jefes desafiantes.
+                    </p>
+                </div>
+
+                <!-- Característica 3 -->
+                <div class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Multijugador</h3>
+                    <p class="feature-description">
+                        Juega con amigos en misiones cooperativas o compite en el modo PvP.
+                    </p>
+                </div>
+
+                <!-- Característica 4 -->
+                <div class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3 class="feature-title">Personalización</h3>
+                    <p class="feature-description">
+                        Personaliza a tu personaje con cientos de objetos y apariencias únicas.
+                    </p>
+                </div>
+
+                <!-- Característica 5 -->
+                <div class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h3 class="feature-title">Sistema de Música</h3>
+                    <p class="feature-description">
+                        Disfruta de una banda sonora épica que se adapta a cada situación del juego.
+                    </p>
+                </div>
+
+                <!-- Característica 6 -->
+                <div class="feature-card" role="listitem">
+                    <div class="feature-icon" aria-hidden="true">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h3 class="feature-title">Economía Dinámica</h3>
+                    <p class="feature-description">
+                        Participa en un sistema económico en tiempo real. Comercia con otros jugadores.
+                    </p>
+                    <div class="feature-badge" aria-hidden="true">Exclusivo</div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="features-cta" aria-labelledby="cta-heading">
+                <div class="cta-content">
+                    <h2 id="cta-heading" class="cta-title">¿Listo para la Aventura?</h2>
+                    <p class="cta-description">
+                        Únete a nuestra comunidad de aventureros y comienza tu viaje épico hoy mismo.
+                        Explora reinos, haz nuevos amigos y vive historias inolvidables.
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="https://discord.gg/tu-invitacion" 
+                           class="btn btn-primary btn-lg" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           aria-label="Unirse a Discord para jugar a PassQuirk RPG">
+                            <i class="fab fa-discord" aria-hidden="true"></i>
+                            <span>Jugar Ahora</span>
+                        </a>
+                        <a href="#clases" 
+                           class="btn btn-outline btn-lg"
+                           aria-label="Ver clases de personajes disponibles">
+                            <i class="fas fa-users" aria-hidden="true"></i>
+                            <span>Ver Clases</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="cta-image" aria-hidden="true">
+                    <img src="assets/images/cta-character.png" 
+                         alt="" 
+                         loading="lazy"
+                         width="400"
+                         height="400">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Clases -->
+    <section id="clases" class="section classes">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Selecciona tu</span>
+                <h2 class="section-title">Clase de <span class="text-gold">Personaje</span></h2>
+                <p class="section-description">Cada clase ofrece un estilo de juego único con habilidades especiales y ventajas tácticas</p>
+            </div>
+
+            <div class="class-filters">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="ranged">A distancia</button>
+                <button class="filter-btn" data-filter="melee">Cuerpo a cuerpo</button>
+                <button class="filter-btn" data-filter="magic">Magia</button>
+            </div>
+
+            <div class="classes-grid">
+                <!-- Clase 1: Arquero -->
+                <div class="class-card" data-category="ranged">
+                    <div class="class-card-inner">
+                        <div class="class-front">
+                            <div class="class-image">
+                                <img src="assets/images/classes/archer.png" alt="Arquero" loading="lazy">
+                                <div class="class-overlay"></div>
+                            </div>
+                            <div class="class-info">
+                                <h3 class="class-name">Arquero</h3>
+                                <p class="class-role">Tirador de Precisión</p>
+                                <div class="class-stats">
+                                    <div class="stat">
+                                        <i class="fas fa-bullseye"></i>
+                                        <span>Precisión: 90%</span>
+                                    </div>
+                                    <div class="stat">
+                                        <i class="fas fa-bolt"></i>
+                                        <span>Velocidad: Alta</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-back">
+                            <h4>Habilidades Principales</h4>
+                            <ul class="class-abilities">
+                                <li><i class="fas fa-check"></i> Tiro Certero</li>
+                                <li><i class="fas fa-check"></i> Lluvia de Flechas</li>
+                                <li><i class="fas fa-check"></i> Ojo de Águila</li>
+                                <li><i class="fas fa-check"></i> Flecha Veloz</li>
+                            </ul>
+                            <div class="class-cta">
+                                <button class="btn btn-primary btn-sm">Seleccionar Clase</button>
+                                <a href="#" class="class-more">Ver detalles <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="class-tag ranged">A distancia</div>
+                </div>
+
+                <!-- Clase 2: Guerrero -->
+                <div class="class-card" data-category="melee">
+                    <div class="class-card-inner">
+                        <div class="class-front">
+                            <div class="class-image">
+                                <img src="assets/images/classes/warrior.png" alt="Guerrero" loading="lazy">
+                                <div class="class-overlay"></div>
+                            </div>
+                            <div class="class-info">
+                                <h3 class="class-name">Guerrero</h3>
+                                <p class="class-role">Tanque Defensivo</p>
+                                <div class="class-stats">
+                                    <div class="stat">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <span>Defensa: 95%</span>
+                                    </div>
+                                    <div class="stat">
+                                        <i class="fas fa-heart"></i>
+                                        <span>Vida: Alta</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-back">
+                            <h4>Habilidades Principales</h4>
+                            <ul class="class-abilities">
+                                <li><i class="fas fa-check"></i> Golpe Definitivo</li>
+                                <li><i class="fas fa-check"></i> Muro de Acero</li>
+                                <li><i class="fas fa-check"></i> Contraataque</li>
+                                <li><i class="fas fa-check"></i> Grito de Guerra</li>
+                            </ul>
+                            <div class="class-cta">
+                                <button class="btn btn-primary btn-sm">Seleccionar Clase</button>
+                                <a href="#" class="class-more">Ver detalles <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="class-tag melee">Cuerpo a cuerpo</div>
+                </div>
+
+                <!-- Clase 3: Mago -->
+                <div class="class-card" data-category="magic">
+                    <div class="class-card-inner">
+                        <div class="class-front">
+                            <div class="class-image">
+                                <img src="assets/images/classes/mage.png" alt="Mago" loading="lazy">
+                                <div class="class-overlay"></div>
+                            </div>
+                            <div class="class-info">
+                                <h3 class="class-name">Mago</h3>
+                                <p class="class-role">Lanzador de Hechizos</p>
+                                <div class="class-stats">
+                                    <div class="stat">
+                                        <i class="fas fa-fire"></i>
+                                        <span>Daño Mágico: 95%</span>
+                                    </div>
+                                    <div class="stat">
+                                        <i class="fas fa-magic"></i>
+                                        <span>Maná: Alto</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-back">
+                            <h4>Habilidades Principales</h4>
+                            <ul class="class-abilities">
+                                <li><i class="fas fa-check"></i> Bola de Fuego</li>
+                                <li><i class="fas fa-check"></i> Tormenta de Hielo</li>
+                                <li><i class="fas fa-check"></i> Teletransporte</li>
+                                <li><i class="fas fa-check"></i> Escudo Arcano</li>
+                            </ul>
+                            <div class="class-cta">
+                                <button class="btn btn-primary btn-sm">Seleccionar Clase</button>
+                                <a href="#" class="class-more">Ver detalles <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="class-tag magic">Magia</div>
+                </div>
+
+                <!-- Clase 4: Asesino -->
+                <div class="class-card" data-category="melee">
+                    <div class="class-card-inner">
+                        <div class="class-front">
+                            <div class="class-image">
+                                <img src="assets/images/classes/assassin.png" alt="Asesino" loading="lazy">
+                                <div class="class-overlay"></div>
+                            </div>
+                            <div class="class-info">
+                                <h3 class="class-name">Asesino</h3>
+                                <p class="class-role">Asesino Sigiloso</p>
+                                <div class="class-stats">
+                                    <div class="stat">
+                                        <i class="fas fa-skull"></i>
+                                        <span>Daño Crítico: 30%</span>
+                                    </div>
+                                    <div class="stat">
+                                        <i class="fas fa-shoe-prints"></i>
+                                        <span>Sigilo: Máximo</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="class-back">
+                            <h4>Habilidades Principales</h4>
+                            <ul class="class-abilities">
+                                <li><i class="fas fa-check"></i> Golpe Mortal</li>
+                                <li><i class="fas fa-check"></i> Invisibilidad</li>
+                                <li><i class="fas fa-check"></i> Veneno Letal</li>
+                                <li><i class="fas fa-check"></i> Esquiva Ágil</li>
+                            </ul>
+                            <div class="class-cta">
+                                <button class="btn btn-primary btn-sm">Seleccionar Clase</button>
+                                <a href="#" class="class-more">Ver detalles <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="class-tag melee">Cuerpo a cuerpo</div>
+                </div>
+            </div>
+
+            <div class="classes-cta">
+                <div class="cta-content">
+                    <h3>¿No estás seguro de qué clase elegir?</h3>
+                    <p>Realiza nuestro test de personalidad para descubrir la clase que mejor se adapta a tu estilo de juego.</p>
+                </div>
+                <a href="#" class="btn btn-outline">
+                    <i class="fas fa-magic"></i> Descubre tu Clase Ideal
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección del Mundo -->
+    <section id="mundo" class="section world">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Descubre los</span>
+                <h2 class="section-title">Reinos de <span class="text-gold">PassQuirk</span></h2>
+                <p class="section-description">Explora tierras legendarias, descubre secretos ancestrales y enfréntate a desafíos épicos</p>
+            </div>
+
+            <div class="world-navigation">
+                <button class="nav-btn active" data-region="akai">Reino de Akai</button>
+                <button class="nav-btn" data-region="say">Tierras de Say</button>
+                <button class="nav-btn" data-region="masai">Dominios de Masai</button>
+                <button class="nav-btn" data-region="bosque">Bosque Prohibido</button>
+                <button class="nav-btn" data-region="cueva">Cueva de las Sombras</button>
+            </div>
+
+            <div class="world-content">
+                <!-- Mapa Interactivo -->
+                <div class="world-map-container">
+                    <div class="world-map">
+                        <img src="assets/images/world-map.png" alt="Mapa de los Reinos de PassQuirk" class="map-image" loading="lazy">
+                        
+                        <!-- Puntos de Interés -->
+                        <div class="map-pin" style="top: 30%; left: 25%;" data-region="akai">
+                            <div class="pin"></div>
+                            <div class="pin-pulse"></div>
+                        </div>
+                        <div class="map-pin" style="top: 45%; left: 60%;" data-region="say">
+                            <div class="pin"></div>
+                            <div class="pin-pulse"></div>
+                        </div>
+                        <div class="map-pin" style="top: 70%; left: 40%;" data-region="masai">
+                            <div class="pin"></div>
+                            <div class="pin-pulse"></div>
+                        </div>
+                        <div class="map-pin" style="top: 20%; left: 70%;" data-region="bosque">
+                            <div class="pin"></div>
+                            <div class="pin-pulse"></div>
+                        </div>
+                        <div class="map-pin" style="top: 60%; left: 20%;" data-region="cueva">
+                            <div class="pin"></div>
+                            <div class="pin-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información de la Región -->
+                <div class="world-info">
+                    <div class="region-info active" data-region="akai">
+                        <h3 class="region-name">Reino de Akai</h3>
+                        <div class="region-tags">
+                            <span class="region-tag"><i class="fas fa-fire"></i> Volcánico</span>
+                            <span class="region-tag"><i class="fas fa-chess-king"></i> Capital Imperial</span>
+                        </div>
+                        <p class="region-description">
+                            El poderoso Reino de Akai, gobernado con mano de hierro por el Emperador Kaito. 
+                            Sus tierras volcánicas albergan las forjas más grandes del mundo, donde se forjan 
+                            armas legendarias con el metal sagrado extraído del Monte Fujin.
+                        </p>
+                        <div class="region-stats">
+                            <div class="stat">
+                                <i class="fas fa-skull"></i>
+                                <div>
+                                    <span class="stat-value">Alto</span>
+                                    <span class="stat-label">Nivel de Amenaza</span>
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-coins"></i>
+                                <div>
+                                    <span class="stat-value">Rico</span>
+                                    <span class="stat-label">Economía</span>
+                                </div>
+                            </div>
+                            <div class="stat">
+                                <i class="fas fa-users"></i>
+                                <div>
+                                    <span class="stat-value">Alta</span>
+                                    <span class="stat-label">Población</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="region-features">
+                            <h4>Características Destacadas</h4>
+                            <ul>
+                                <li><i class="fas fa-check"></i> Ciudad Capital: Akai-Tei (Población: 50,000+)</li>
+                                <li><i class="fas fa-check"></i> Clima: Cálido y árido con actividad volcánica</li>
+                                <li><i class="fas fa-check"></i> Recursos: Minerales, armas, artesanías</li>
+                                <li><i class="fas fa-check"></i> Peligros: Bandidos, criaturas del fuego, inestabilidad política</li>
+                            </ul>
+                        </div>
+                        <a href="#" class="btn btn-outline">
+                            <i class="fas fa-book"></i> Leer la Historia Completa
+                        </a>
+                    </div>
+
+                    <!-- Otras regiones (ocultas por defecto) -->
+                    <div class="region-info" data-region="say">
+                        <!-- Contenido similar para las Tierras de Say -->
+                    </div>
+                    <div class="region-info" data-region="masai">
+                        <!-- Contenido similar para los Dominios de Masai -->
+                    </div>
+                    <div class="region-info" data-region="bosque">
+                        <!-- Contenido similar para el Bosque Prohibido -->
+                    </div>
+                    <div class="region-info" data-region="cueva">
+                        <!-- Contenido similar para la Cueva de las Sombras -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="world-explore">
+                <div class="explore-content">
+                    <h3>¿Listo para la aventura?</h3>
+                    <p>Únete a miles de aventureros y comienza tu viaje por los reinos de PassQuirk hoy mismo.</p>
+                </div>
+                <div class="explore-actions">
+                    <a href="#" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Empezar Aventura
+                    </a>
+                    <a href="#" class="btn btn-outline">
+                        <i class="fas fa-book"></i> Leer la Historia
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Comandos -->
+    <section id="comandos" class="section commands">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Domina los</span>
+                <h2 class="section-title">Comandos de <span class="text-gold">PassQuirk</span></h2>
+                <p class="section-description">Descubre todos los comandos disponibles para sacar el máximo provecho de tu aventura</p>
+            </div>
+
+            <!-- Filtros de Categorías -->
+            <div class="command-filters">
+                <button class="filter-btn active" data-category="all">
+                    <i class="fas fa-th-large"></i> Todos
+                </button>
+                <button class="filter-btn" data-category="juego">
+                    <i class="fas fa-gamepad"></i> Juego
+                </button>
+                <button class="filter-btn" data-category="economia">
+                    <i class="fas fa-coins"></i> Economía
+                </button>
+                <button class="filter-btn" data-category="social">
+                    <i class="fas fa-users"></i> Social
+                </button>
+                <button class="filter-btn" data-category="clanes">
+                    <i class="fas fa-flag"></i> Clanes
+                </button>
+                <button class="filter-btn" data-category="moderacion">
+                    <i class="fas fa-shield-alt"></i> Moderación
+                </button>
+            </div>
+
+            <!-- Barra de Búsqueda -->
+            <div class="command-search">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="commandSearch" placeholder="Buscar comandos...">
+                    <div class="search-results">
+                        <span id="resultCount">0</span> comandos encontrados
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Comandos -->
+            <div class="commands-container">
+                <!-- Categoría: Juego -->
+                <div class="command-category" data-category="juego">
+                    <div class="category-header">
+                        <i class="fas fa-gamepad"></i>
+                        <h3>Comandos de Juego</h3>
+                        <span class="command-count">8 comandos</span>
+                    </div>
+                    <div class="commands-grid">
+                        <!-- Comando 1 -->
+                        <div class="command-card">
+                            <div class="command-header">
+                                <code class="command-name">!start</code>
+                                <span class="command-tag">Nuevo</span>
+                            </div>
+                            <p class="command-description">Comienza tu aventura en el mundo de PassQuirk</p>
+                            <div class="command-details">
+                                <div class="detail">
+                                    <span class="detail-label">Uso:</span>
+                                    <code>!start</code>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Alias:</span>
+                                    <code>!comenzar</code>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Cooldown:</span>
+                                    <span>Ninguno</span>
+                                </div>
+                            </div>
+                            <button class="btn-copy" data-command="!start">
+                                <i class="far fa-copy"></i> Copiar
+                            </button>
+                        </div>
+
+                        <!-- Comando 2 -->
+                        <div class="command-card">
+                            <div class="command-header">
+                                <code class="command-name">!perfil</code>
+                                <span class="command-tag premium">Premium</span>
+                            </div>
+                            <p class="command-description">Muestra tu perfil de jugador o el de otro usuario</p>
+                            <div class="command-details">
+                                <div class="detail">
+                                    <span class="detail-label">Uso:</span>
+                                    <code>!perfil [@usuario]</code>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Ejemplo:</span>
+                                    <code>!perfil @UsuarioEjemplo</code>
+                                </div>
+                            </div>
+                            <button class="btn-copy" data-command="!perfil">
+                                <i class="far fa-copy"></i> Copiar
+                            </button>
+                        </div>
+
+                        <!-- Comando 3 -->
+                        <div class="command-card">
+                            <div class="command-header">
+                                <code class="command-name">!explorar</code>
+                            </div>
+                            <p class="command-description">Explora el mundo en busca de aventuras y tesoros</p>
+                            <div class="command-details">
+                                <div class="detail">
+                                    <span class="detail-label">Uso:</span>
+                                    <code>!explorar [zona]</code>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Zonas:</span>
+                                    <span>bosque, montaña, aldea</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Cooldown:</span>
+                                    <span>5 minutos</span>
+                                </div>
+                            </div>
+                            <button class="btn-copy" data-command="!explorar">
+                                <i class="far fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="category-actions">
+                        <button class="btn-show-more">
+                            Ver más comandos de Juego <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Categoría: Economía -->
+                <div class="command-category" data-category="economia">
+                    <div class="category-header">
+                        <i class="fas fa-coins"></i>
+                        <h3>Comandos de Economía</h3>
+                        <span class="command-count">6 comandos</span>
+                    </div>
+                    <div class="commands-grid">
+                        <!-- Comando 1 -->
+                        <div class="command-card">
+                            <div class="command-header">
+                                <code class="command-name">!trabajar</code>
+                            </div>
+                            <p class="command-description">Trabaja para ganar monedas y experiencia</p>
+                            <div class="command-details">
+                                <div class="detail">
+                                    <span class="detail-label">Uso:</span>
+                                    <code>!trabajar</code>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Recompensa:</span>
+                                    <span>100-500 monedas</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Cooldown:</span>
+                                    <span>1 hora</span>
+                                </div>
+                            </div>
+                            <button class="btn-copy" data-command="!trabajar">
+                                <i class="far fa-copy"></i> Copiar
+                            </button>
+                        </div>
+
+                        <!-- Comando 2 -->
+                        <div class="command-card">
+                            <div class="command-header">
+                                <code class="command-name">!tienda</code>
+                            </div>
+                            <p class="command-description">Muestra los artículos disponibles en la tienda</p>
+                            <div class="command-details">
+                                <div class="detail">
+                                    <span class="detail-label">Uso:</span>
+                                    <code>!tienda [categoría]</code>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Categorías:</span>
+                                    <span>armas, armaduras, consumibles</span>
+                                </div>
+                            </div>
+                            <button class="btn-copy" data-command="!tienda">
+                                <i class="far fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="category-actions">
+                        <button class="btn-show-more">
+                            Ver más comandos de Economía <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Categoría: Social -->
+                <div class="command-category" data-category="social">
+                    <div class="category-header">
+                        <i class="fas fa-users"></i>
+                        <h3>Comandos Sociales</h3>
+                        <span class="command-count">5 comandos</span>
+                    </div>
+                    <div class="commands-grid">
+                        <!-- Comando 1 -->
+                        <div class="command-card">
+                            <div class="command-header">
+                                <code class="command-name">!regalar</code>
+                            </div>
+                            <p class="command-description">Envía monedas a otro jugador</p>
+                            <div class="command-details">
+                                <div class="detail">
+                                    <span class="detail-label">Uso:</span>
+                                    <code>!regalar @usuario [cantidad]</code>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Ejemplo:</span>
+                                    <code>!regalar @Amigo 1000</code>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Impuesto:</span>
+                                    <span>5%</span>
+                                </div>
+                            </div>
+                            <button class="btn-copy" data-command="!regalar @usuario 1000">
+                                <i class="far fa-copy"></i> Copiar
+                            </button>
+                        </div>
+
+                        <!-- Comando 2 -->
+                        <div class="command-card">
+                            <div class="command-header">
+                                <code class="command-name">!abrazar</code>
+                            </div>
+                            <p class="command-description">Envía un abrazo a otro jugador</p>
+                            <div class="command-details">
+                                <div class="detail">
+                                    <span class="detail-label">Uso:</span>
+                                    <code>!abrazar @usuario</code>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Ejemplo:</span>
+                                    <code>!abrazar @Amigo</code>
+                                </div>
+                            </div>
+                            <button class="btn-copy" data-command="!abrazar @usuario">
+                                <i class="far fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="category-actions">
+                        <button class="btn-show-more">
+                            Ver más comandos Sociales <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="commands-cta">
+                <div class="cta-content">
+                    <h3>¿Necesitas ayuda con algún comando?</h3>
+                    <p>Únete a nuestro servidor de Discord y nuestro equipo de soporte estará encantado de ayudarte.</p>
+                </div>
+                <a href="https://discord.gg/tu-invitacion" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                    <i class="fab fa-discord"></i> Unirse a Discord
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Preguntas Frecuentes -->
+    <section id="faq" class="section faq">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">¿Tienes dudas?</span>
+                <h2 class="section-title">Preguntas <span class="text-gold">Frecuentes</span></h2>
+                <p class="section-description">Aquí encontrarás respuestas a las preguntas más comunes sobre PassQuirk RPG</p>
+            </div>
+
+            <div class="faq-container">
+                <!-- Categorías de Preguntas -->
+                <div class="faq-categories">
+                    <button class="category-btn active" data-category="general">
+                        <i class="fas fa-question-circle"></i> General
+                    </button>
+                    <button class="category-btn" data-category="juego">
+                        <i class="fas fa-gamepad"></i> Juego
+                    </button>
+                    <button class="category-btn" data-category="cuenta">
+                        <i class="fas fa-user"></i> Cuenta
+                    </button>
+                    <button class="category-btn" data-category="premium">
+                        <i class="fas fa-crown"></i> Premium
+                    </button>
+                    <button class="category-btn" data-category="soporte">
+                        <i class="fas fa-headset"></i> Soporte
+                    </button>
+                </div>
+
+                <!-- Barra de Búsqueda -->
+                <div class="faq-search">
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="faqSearch" placeholder="Buscar en preguntas frecuentes...">
+                    </div>
+                </div>
+
+
+                <!-- Preguntas Frecuentes -->
+                <div class="faq-accordion">
+                    <!-- Categoría: General -->
+                    <div class="faq-category" data-category="general">
+                        <h3 class="faq-category-title">
+                            <i class="fas fa-question-circle"></i> Preguntas Generales
+                        </h3>
+                        <div class="faq-items">
+                            <!-- Pregunta 1 -->
+                            <div class="faq-item active">
+                                <div class="faq-question">
+                                    <h4>¿Qué es PassQuirk RPG?</h4>
+                                    <span class="faq-toggle">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </span>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>PassQuirk RPG es un juego de rol por turnos que se juega directamente en Discord. Los jugadores pueden crear personajes, explorar mundos, completar misiones, luchar contra monstruos y otros jugadores, y desbloquear habilidades especiales. Todo esto sin necesidad de instalar nada más que la aplicación de Discord.</p>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 2 -->
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <h4>¿Necesito instalar algo para jugar?</h4>
+                                    <span class="faq-toggle">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </span>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>¡No es necesario instalar nada más! PassQuirk RPG funciona completamente dentro de Discord. Solo necesitas:</p>
+                                    <ol>
+                                        <li>Tener una cuenta de Discord (es gratuita)</li>
+                                        <li>Unirte a nuestro servidor oficial</li>
+                                        <li>Escribir <code>!start</code> en el canal correspondiente</li>
+                                    </ol>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 3 -->
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <h4>¿Es gratuito jugar?</h4>
+                                    <span class="faq-toggle">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </span>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Sí, PassQuirk RPG es completamente gratuito para jugar. Ofrecemos contenido premium opcional que proporciona ventajas cosméticas y algunas comodidades adicionales, pero nunca ventajas de pago que afecten el equilibrio del juego.</p>
+                                    <div class="premium-features">
+                                        <div class="feature">
+                                            <i class="fas fa-check"></i>
+                                            <span>Todo el contenido principal gratuito</span>
+                                        </div>
+                                        <div class="feature">
+                                            <i class="fas fa-crown"></i>
+                                            <span>Ventajas cosméticas para jugadores premium</span>
+                                        </div>
+                                        <div class="feature">
+                                            <i class="fas fa-balance-scale"></i>
+                                            <span>Ninguna ventaja de pago que afecte el equilibrio</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Categoría: Juego -->
+                    <div class="faq-category" data-category="juego">
+                        <h3 class="faq-category-title">
+                            <i class="fas fa-gamepad"></i> Sobre el Juego
+                        </h3>
+                        <div class="faq-items">
+                            <!-- Pregunta 1 -->
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <h4>¿Cómo gano experiencia y subo de nivel?</h4>
+                                    <span class="faq-toggle">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </span>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>Puedes ganar experiencia de varias formas en PassQuirk RPG:</p>
+                                    <ul>
+                                        <li><strong>Completando misiones</strong> - Las misiones principales y secundarias otorgan grandes cantidades de experiencia.</li>
+                                        <li><strong>Derrotando enemigos</strong> - Cada enemigo derrotado te da experiencia basada en su nivel y dificultad.</li>
+                                        <li><strong>Eventos especiales</strong> - Participa en eventos limitados para ganar experiencia adicional.</li>
+                                        <li><strong>Logros</strong> - Algunos logros otorgan experiencia como recompensa.</li>
+                                    </ul>
+                                    <p>Una vez que llenes tu barra de experiencia, subirás de nivel automáticamente, lo que te dará puntos de habilidad para mejorar a tu personaje.</p>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 2 -->
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <h4>¿Cómo funciona el sistema de combate?</h4>
+                                    <span class="faq-toggle">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </span>
+                                </div>
+                                <div class="faq-answer">
+                                    <p>El combate en PassQuirk RPG es por turnos y sigue estas mecánicas principales:</p>
+                                    <div class="combat-mechanics">
+                                        <div class="mechanic">
+                                            <div class="mechanic-icon">
+                                                <i class="fas fa-swords"></i>
+                                            </div>
+                                            <div class="mechanic-info">
+                                                <h5>Ataque Básico</h5>
+                                                <p>Inflige daño normal al enemigo. La cantidad de daño depende de tu ataque y la defensa del objetivo.</p>
+                                            </div>
+                                        </div>
+                                        <div class="mechanic">
+                                            <div class="mechanic-icon">
+                                                <i class="fas fa-magic"></i>
+                                            </div>
+                                            <div class="mechanic-info">
+                                                <h5>Habilidades Especiales</h5>
+                                                <p>Cada clase tiene habilidades únicas que consumen PM (Puntos de Magia). Algunas infligen más daño, otras curan o otorgan bonificaciones.</p>
+                                            </div>
+                                        </div>
+                                        <div class="mechanic">
+                                            <div class="mechanic-icon">
+                                                <i class="fas fa-dice"></i>
+                                            </div>
+                                            <div class="mechanic-info">
+                                                <h5>Críticos y Esquives</h5>
+                                                <p>Tus estadísticas de precisión y evasión determinan la probabilidad de realizar un ataque crítico o esquivar un ataque enemigo.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p>El combate termina cuando todos los miembros de un bando son derrotados o huyen de la batalla.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA de Soporte -->
+                <div class="faq-support">
+                    <div class="support-content">
+                        <div class="support-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="support-text">
+                            <h3>¿No encontraste lo que buscabas?</h3>
+                            <p>Nuestro equipo de soporte está disponible 24/7 para ayudarte con cualquier consulta o problema que puedas tener.</p>
+                        </div>
+                    </div>
+                    <div class="support-actions">
+                        <a href="https://discord.gg/tu-invitacion" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-discord"></i> Contactar Soporte
+                        </a>
+                        <a href="#" class="btn btn-outline" id="suggestQuestion">
+                            <i class="far fa-lightbulb"></i> Sugerir Pregunta
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+                    </div>
+                    <div class="faq-answer">
+                        <p>No es necesario instalar nada. Todo el juego se desarrolla dentro de Discord, así que solo necesitas una cuenta de Discord y estar en nuestro servidor.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>¿Es gratuito?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sí, PassQuirk RPG es completamente gratuito. No hay pagos ocultos ni ventajas por pagar.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>¿Puedo jugar en mi teléfono?</h3>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>¡Sí! La aplicación de Discord está disponible para iOS y Android, por lo que puedes jugar desde cualquier lugar.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>¿Listo para la Aventura?</h2>
+            <p>Únete a nuestra comunidad de jugadores y comienza tu viaje épico hoy mismo.</p>
+            <a href="https://discord.gg/tu-invitacion" class="btn btn-primary btn-large" target="_blank">
+                <i class="fab fa-discord"></i> Unirse Ahora
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="assets/images/logo.png" alt="PassQuirk RPG Logo">
+                    <span>PassQuirk RPG</span>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h4>Juego</h4>
+                        <a href="#inicio">Inicio</a>
+                        <a href="#caracteristicas">Características</a>
+                        <a href="#clases">Clases</a>
+                        <a href="#mundo">Mundo</a>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Comunidad</h4>
+                        <a href="#">Discord</a>
+                        <a href="#">Twitter</a>
+                        <a href="#">YouTube</a>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4>Recursos</h4>
+                        <a href="#comandos">Comandos</a>
+                        <a href="#faq">FAQ</a>
+                        <a href="#">Guías</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 PassQuirk RPG. Todos los derechos reservados.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#inicio" class="back-to-top" aria-label="Volver arriba">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/commands-faq.js"></script>
+</body>
+</html>
+

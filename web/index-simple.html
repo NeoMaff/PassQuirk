@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassQuirk RPG - Panel de Control</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        header {
+            background-color: #1e293b;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #3b82f6;
+        }
+        h1 {
+            color: #60a5fa;
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        .status {
+            background-color: #1e293b;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .status h2 {
+            color: #60a5fa;
+            margin-top: 0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .card {
+            background-color: #1e293b;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h3 {
+            color: #60a5fa;
+            margin-top: 0;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #2563eb;
+        }
+        footer {
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>PassQuirk RPG</h1>
+            <p>Panel de Control</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="status">
+            <h2>Estado del Servidor</h2>
+            <p>El servidor está funcionando correctamente.</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Documentación</h3>
+                <p>Consulta la documentación completa del proyecto.</p>
+                <a href="/docs.html" class="btn">Ver Documentación</a>
+            </div>
+            
+            <div class="card">
+                <h3>Dashboard</h3>
+                <p>Accede al panel de control principal.</p>
+                <a href="/dashboard.html" class="btn">Ir al Dashboard</a>
+            </div>
+            
+            <div class="card">
+                <h3>API</h3>
+                <p>Documentación de la API.</p>
+                <a href="/api-docs" class="btn">Ver API</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="container">
+        <p>&copy; 2025 PassQuirk RPG. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

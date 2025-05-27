@@ -1,0 +1,78 @@
+🧠 ESQUEMA COMPLETO: PASSQUIRKRPG
+
+-------------------------------------
+🟣 MULTIPLAYER & MUNDO - COOPERATIVO
+-------------------------------------
+- Modo historia cooperativo no lineal ni obligatorio.
+- Mundo abierto con ciudades, enemigos, PassQuirks.
+- Objetivo: farmear, subir stats, capturar PassQuirks.
+- Sistema de gremios: crear tu equipo con roles (mago, tanque, support).
+- Buscador de jugadores estilo social para unirse a cooperativo.
+
+-------------------------------------
+🟡 SISTEMA DE DÍA, HORA Y CLIMA
+-------------------------------------
+- Elección de país al crear personaje (no comando).
+- Se determina zona horaria automáticamente.
+- Periodo del día: Amanecer, Mediodía, Atardecer, Noche.
+- Clima global que cambia cada X horas:
+  ☀️ Soleado, 🌧️ Lluvia, 🌫️ Niebla, ⛈️ Tormenta, ❄️ Nevada...
+- El clima afecta el loot, enemigos y eventos.
+- Los embeds muestran automáticamente:
+  - Hora local del jugador
+  - Fecha
+  - Periodo del día
+  - Clima actual
+
+📂 Archivos:
+- time_weather_system.js ✅
+- country_categories_system.js ✅
+
+-------------------------------------
+🟠 EXPLORACIÓN DINÁMICA EN EMBED
+-------------------------------------
+- Un solo embed que se actualiza dinámicamente durante la exploración.
+- Eventos posibles:
+  ❌ Nada encontrado
+  🎒 Ítem encontrado
+  💥 Enemigo
+  ✨ Quirk raro
+  💎 Tesoro oculto
+- Efectos del clima influyen en probabilidad de los eventos.
+- Botón de "Atrás" para revisar eventos anteriores.
+- Botón de "Explorar" para seguir buscando.
+
+📂 Archivo:
+- exploration_system.js ✅
+
+-------------------------------------
+🟢 HISTORIA PERSONALIZADA POR IA
+-------------------------------------
+- IA genera historia según:
+  - Nombre, edad, avatar, acciones realizadas.
+- Se puede mostrar al jugador en embed semanal o perfil.
+- Objetivo: crear un lore personal por jugador.
+
+-------------------------------------
+🔵 DISEÑO VISUAL DEL BOT
+-------------------------------------
+- Separadores decorativos en embeds.
+- Diseños con emojis animados si es posible.
+- Menús visuales para seleccionar país y región.
+
+🔗 ENLACES:
+- Web oficial: https://passquirkrpg.vercel.app
+- Editor visual: https://passquirkrpg.vercel.app/editor
+- Ejemplo de sistema horario en bot: https://youtu.be/ZTfp8LNoFUQ?si=TXivPJo-WbhtA6Y9&t=261
+
+-------------------------------------
+✅ TO-DO LIST
+-------------------------------------
+1. Integrar país y zona horaria al perfil.
+2. Mostrar fecha/hora/clima automáticamente.
+3. Sistema climático con efectos.
+4. Crear exploración reactiva en un solo embed.
+5. Implementar historial de exploraciones.
+6. IA para historia del jugador.
+7. Separadores visuales bonitos.
+8. Soporte para emojis animados si es posible.

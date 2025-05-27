@@ -1,0 +1,52 @@
+{
+  "name": "passquirk-rpg-bot",
+  "version": "1.0.0",
+  "description": "Un bot de RPG para Discord con sistema de economía, música y más",
+  "main": "bot/index.js",
+  "scripts": {
+    "start": "node bot/index.js",
+    "dev": "nodemon bot/index.js",
+    "deploy": "node deploy-commands.js",
+    "web": "node web/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "rpg",
+    "game",
+    "economy"
+  ],
+  "author": "PassQuirk Team",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/builders": "^1.6.3",
+    "@discordjs/rest": "^1.7.0",
+    "@discordjs/voice": "^0.16.0",
+    "@discordjs/ws": "^0.6.0",
+    "@top-gg/sdk": "^3.2.0",
+    "axios": "^1.6.2",
+    "canvas": "^2.11.2",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "ffmpeg-static": "^5.2.0",
+    "libsodium-wrappers": "^0.7.11",
+    "mongoose": "^8.0.3",
+    "ms": "^3.0.0",
+    "node-fetch": "^3.3.2",
+    "opusscript": "^0.0.8",
+    "passport": "^0.7.0",
+    "passport-discord": "^0.1.4",
+    "quick.db": "^9.0.6",
+    "ytdl-core": "^4.11.5"
+  },
+  "devDependencies": {
+    "eslint": "^8.55.0",
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=16.9.0"
+  }
+}
