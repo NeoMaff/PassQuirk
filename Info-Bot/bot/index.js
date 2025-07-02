@@ -1,9 +1,14 @@
-require('dotenv').config();
+// Importar path primero
+const path = require('path');
+
+// Cargar variables de entorno
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+
+// Importar módulos necesarios
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('fs');
-const path = require('path');
 
 // Inicializar el cliente de Discord
 const client = new Client({
@@ -21,21 +26,44 @@ const client = new Client({
 const DialogueManager = require('./systems/dialogs/DialogueManager');
 client.dialogueManager = new DialogueManager(client);
 
+// Inicializar el PassQuirk Game Manager
+const PassQuirkGameManager = require('./core/passquirk-game-manager');
+client.gameManager = new PassQuirkGameManager(client);
+
 // Colecciones para comandos y eventos
 client.commands = new Collection();
 client.events = new Collection();
 client.buttons = new Collection();
 client.selectMenus = new Collection();
 
+// Función para cargar comandos recursivamente
+function loadCommandsRecursively(dir) {
+    const items = fs.readdirSync(dir, { withFileTypes: true });
+    
+    for (const item of items) {
+        const fullPath = path.join(dir, item.name);
+        
+        if (item.isDirectory()) {
+            // Si es un directorio, cargar recursivamente
+            loadCommandsRecursively(fullPath);
+        } else if (item.isFile() && item.name.endsWith('.js')) {
+            // Si es un archivo .js, cargarlo como comando
+            try {
+                const command = require(fullPath);
+                if (command.data && command.data.name) {
+                    client.commands.set(command.data.name, command);
+                    console.log(`✅ Comando cargado: ${command.data.name} desde ${fullPath}`);
+                }
+            } catch (error) {
+                console.error(`❌ Error al cargar comando ${item.name}:`, error.message);
+            }
+        }
+    }
+}
+
 // Cargar comandos
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-
-for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    client.commands.set(command.data.name, command);
-}
+loadCommandsRecursively(commandsPath);
 
 // Cargar eventos
 const eventsPath = path.join(__dirname, 'events');
@@ -54,20 +82,32 @@ for (const file of eventFiles) {
 // Iniciar el bot
 (async () => {
     try {
-        // Cargar comandos
-        const commands = [];
-        const commandFiles = fs.readdirSync(path.join(__dirname, 'commands')).filter(file => file.endsWith('.js'));
-
-        for (const file of commandFiles) {
-            try {
-                const command = require(`./commands/${file}`);
-                commands.push(command.data.toJSON());
-                client.commands.set(command.data.name, command);
-                console.log(`✅ Comando cargado: ${command.data.name}`);
-            } catch (error) {
-                console.error(`Error al cargar el comando ${file}:`, error);
+        // Función para recopilar comandos recursivamente para el registro
+        function collectCommandsForRegistration(dir, commands = []) {
+            const items = fs.readdirSync(dir, { withFileTypes: true });
+            
+            for (const item of items) {
+                const fullPath = path.join(dir, item.name);
+                
+                if (item.isDirectory()) {
+                    collectCommandsForRegistration(fullPath, commands);
+                } else if (item.isFile() && item.name.endsWith('.js')) {
+                    try {
+                        const command = require(fullPath);
+                        if (command.data && command.data.name) {
+                            commands.push(command.data.toJSON());
+                        }
+                    } catch (error) {
+                        console.error(`❌ Error al procesar comando ${item.name} para registro:`, error.message);
+                    }
+                }
             }
+            return commands;
         }
+
+        // Recopilar comandos para registro
+        const commands = collectCommandsForRegistration(path.join(__dirname, 'commands'));
+        console.log(`📋 Total de comandos para registrar: ${commands.length}`);
 
         // Iniciar el bot
         console.log('🔑 Iniciando sesión con el token');
@@ -102,23 +142,14 @@ for (const file of eventFiles) {
     }
 })();
 
-// Manejar interacciones de diálogos
-client.on('interactionCreate', async interaction => {
-    try {
-        // Pasar la interacción al gestor de diálogos
-        if (interaction.isButton() || interaction.isSelectMenu()) {
-            await client.dialogueManager.handleInteraction(interaction);
-        }
-    } catch (error) {
-        console.error('Error al manejar interacción de diálogo:', error);
-        if (!interaction.replied && !interaction.deferred) {
-            await interaction.reply({ 
-                content: '❌ Ha ocurrido un error al procesar tu solicitud.', 
-                ephemeral: true 
-            });
-        }
-    }
-});
+// Cargar manejadores de interacciones
+const rpgButtons = require('./buttons/rpgButtons');
+const rpgMenus = require('./selectMenus/rpgMenus');
+
+// Los manejadores de interacciones están en events/interactionCreate.js
+// No duplicar aquí para evitar conflictos
+
+
 
 // Manejo de errores
 process.on('unhandledRejection', error => {

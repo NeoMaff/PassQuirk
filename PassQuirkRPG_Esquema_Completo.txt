@@ -48,7 +48,7 @@
 -------------------------------------
 🟢 HISTORIA PERSONALIZADA POR IA
 -------------------------------------
-- IA genera historia según:
+- IA genera historia según (EN UN FUTURO YA TERMINAR EL BOT):
   - Nombre, edad, avatar, acciones realizadas.
 - Se puede mostrar al jugador en embed semanal o perfil.
 - Objetivo: crear un lore personal por jugador.

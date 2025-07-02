@@ -1,18 +1,19 @@
+// 🚀 EVENTO READY - Cuando el bot se conecta exitosamente
 const { ActivityType } = require('discord.js');
-const mongoose = require('mongoose');
+const { connectDatabase } = require('../config/database');
 
 module.exports = {
     name: 'ready',
     once: true,
     async execute(client) {
         try {
-            // Conectar a MongoDB
-            await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/passquirk', {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            });
+            // Conectar a SQLite (base de datos local)
+            const connected = await connectDatabase();
             
-            console.log(`✅ Conectado a MongoDB`);
+            if (!connected) {
+                console.error('❌ No se pudo conectar a la base de datos');
+                return;
+            }
             
             // Establecer el estado del bot
             const activities = [

@@ -1,4 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
+// 🎒 COMANDO INVENTORY - Sistema de inventario del usuario
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
+const { PassQuirkEmbed } = require('../../utils/embedStyles');
 const User = require('../../models/User');
 const { formatNumber, createProgressBar } = require('../../utils/helpers');
 
@@ -21,21 +23,26 @@ module.exports = {
         
         try {
             // Buscar al usuario en la base de datos
-            let user = await User.findOne({ userId: targetUser.id });
+            let user = await User.findOne({ where: { userId: targetUser.id } });
             
             // Si el usuario no existe o no tiene inventario
             if (!user || !user.inventory || user.inventory.length === 0) {
-                const emptyEmbed = new EmbedBuilder()
-                    .setColor('#95a5a6')
-                    .setTitle(`${isSelf ? 'Tu inventario' : `Inventario de ${targetUser.username}`}`)
+                const emptyEmbed = new PassQuirkEmbed()
+                    .setTitle(`${isSelf ? '🎒 Tu Inventario Vacío' : `🎒 Inventario de ${targetUser.username}`} - PassQuirk RPG`)
                     .setDescription(isSelf 
-                        ? 'Tu inventario está vacío. Usa `/tienda` para comprar objetos.' 
-                        : `${targetUser.username} no tiene ningún objeto en su inventario.`)
-                    .setThumbnail(targetUser.displayAvatarURL())
+                        ? '**¡Tu mochila de aventurero está vacía!** 🎒\n\nParece que aún no has adquirido ningún objeto para tu épica aventura. ¡Es hora de visitar la tienda mágica!' 
+                        : `**El inventario de ${targetUser.username} está vacío** 🎒\n\nEste aventurero aún no ha comenzado a coleccionar objetos mágicos.`)
+                    .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
+                    .addFields(
+                        { name: '🛒 Consejo del Mentor', value: isSelf ? 'Usa `/tienda` para comprar tu primer objeto mágico' : 'Este héroe necesita visitar la tienda', inline: false },
+                        { name: '⚡ Estado', value: 'Inventario vacío', inline: true },
+                        { name: '📦 Objetos', value: '0 objetos', inline: true }
+                    )
+                    .setImage('https://i.imgur.com/empty_inventory_banner.png')
                     .setFooter({ 
                         text: isSelf 
-                            ? 'Usa /tienda para comprar objetos nuevos'
-                            : `Solicitado por ${interaction.user.username}`,
+                            ? '⚡ Inventario PassQuirk RPG | Usa /tienda para comenzar tu colección'
+                            : `⚡ Inventario PassQuirk RPG | Solicitado por ${interaction.user.username}`,
                         iconURL: interaction.user.displayAvatarURL() 
                     });
                 
@@ -64,15 +71,20 @@ module.exports = {
                 const totalItems = sortedInventory.reduce((acc, item) => acc + item.amount, 0);
                 const totalValue = sortedInventory.reduce((acc, item) => acc + (item.value * item.amount), 0);
                 
-                const embed = new EmbedBuilder()
-                    .setColor('#3498db')
-                    .setTitle(`🎒 ${isSelf ? 'Tu inventario' : `Inventario de ${targetUser.username}`}`)
-                    .setThumbnail(targetUser.displayAvatarURL())
+                const embed = new PassQuirkEmbed()
+                    .setTitle(`🎒 ${isSelf ? 'Tu Inventario Mágico' : `Inventario de ${targetUser.username}`} - PassQuirk RPG`)
+                    .setDescription(`**¡Aquí están todos tus tesoros de aventurero!** ⚔️\n\nUna colección impresionante de objetos mágicos y útiles para tu épica jornada.`)
+                    .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
+                    .addFields(
+                        { name: '📊 Estadísticas del Inventario', value: `**${totalItems}** objetos totales\n**$${formatNumber(totalValue)}** valor total`, inline: true },
+                        { name: '📄 Página Actual', value: `${currentPage + 1} de ${pages.length}`, inline: true },
+                        { name: '🎒 Estado', value: 'Inventario cargado', inline: true }
+                    )
+                    .setImage('https://i.imgur.com/inventory_banner.png')
                     .setFooter({ 
-                        text: `Página ${currentPage + 1}/${pages.length} • ${totalItems} objetos ($${formatNumber(totalValue)})`,
+                        text: `⚡ Inventario PassQuirk RPG | Página ${currentPage + 1}/${pages.length} • ${totalItems} objetos ($${formatNumber(totalValue)})`,
                         iconURL: interaction.client.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
+                    });
                 
                 // Agrupar ítems por tipo
                 const itemsByType = {};

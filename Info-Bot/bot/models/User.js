@@ -1,60 +1,157 @@
-const mongoose = require('mongoose');
+// 👤 MODELO USER - Esquema de base de datos para usuarios
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const userSchema = new mongoose.Schema({
-    userId: { type: String, required: true, unique: true },
-    username: { type: String, required: true },
-    balance: { type: Number, default: 1000 },
-    gems: { type: Number, default: 0 },
-    pg: { type: Number, default: 0 },
-    lastDaily: { type: Date },
-    lastWork: { type: Date },
-    inventory: [{
-        itemId: String,
-        name: String,
-        description: String,
-        value: Number,
-        amount: { type: Number, default: 1 },
-        type: String,
-        rarity: { type: String, default: 'common' },
-        createdAt: { type: Date, default: Date.now }
-    }],
+const User = sequelize.define('User', {
+    userId: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+        allowNull: false,
+        unique: true
+    },
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    balance: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1000
+    },
+    gems: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    pg: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    lastDaily: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    lastWork: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    dailyStreak: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    
+    // Campos específicos del RPG
+    characterName: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    characterClass: {
+        type: DataTypes.ENUM('Guerrero', 'Mago', 'Explorador', 'Sanador'),
+        allowNull: true
+    },
+    hasCharacter: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    
+    // Estadísticas RPG (almacenadas como JSON)
+    rpgStats: {
+        type: DataTypes.JSON,
+        defaultValue: {
+            level: 1,
+            xp: 0,
+            hp: 100,
+            maxHp: 100,
+            mp: 50,
+            maxMp: 50,
+            attack: 10,
+            defense: 5,
+            speed: 8,
+            intelligence: 7
+        }
+    },
+    
+    // Ubicación y progreso
+    location: {
+        type: DataTypes.JSON,
+        defaultValue: {
+            region: 'Centro de Inicio',
+            zone: 'Plaza Principal',
+            coordinates: { x: 0, y: 0 }
+        }
+    },
+    
+    // Quirks (habilidades especiales)
+    quirks: {
+        type: DataTypes.JSON,
+        defaultValue: []
+    },
+    
+    // Equipo equipado
+    equipment: {
+        type: DataTypes.JSON,
+        defaultValue: {
+            weapon: null,
+            armor: null,
+            accessory: null
+        }
+    },
+    
+    // Misiones y progreso
+    quests: {
+        type: DataTypes.JSON,
+        defaultValue: []
+    },
+    
+    // Inventario
+    inventory: {
+        type: DataTypes.JSON,
+        defaultValue: []
+    },
+    
+    // Estadísticas generales
     stats: {
-        level: { type: Number, default: 1 },
-        xp: { type: Number, default: 0 },
-        messages: { type: Number, default: 0 },
-        commands: { type: Number, default: 0 },
-        voiceMinutes: { type: Number, default: 0 }
+        type: DataTypes.JSON,
+        defaultValue: {
+            level: 1,
+            xp: 0,
+            messages: 0,
+            commands: 0,
+            voiceMinutes: 0
+        }
     },
+    
+    // Configuraciones
     settings: {
-        notifications: { type: Boolean, default: true },
-        privacy: { type: String, enum: ['public', 'private'], default: 'public' },
-        theme: { type: String, default: 'dark' }
+        type: DataTypes.JSON,
+        defaultValue: {
+            notifications: true,
+            privacy: 'public',
+            theme: 'dark'
+        }
     },
+    
+    // Cooldowns
     cooldowns: {
-        work: { type: Date },
-        daily: { type: Date },
-        crime: { type: Date },
-        rob: { type: Date }
+        type: DataTypes.JSON,
+        defaultValue: {
+            work: null,
+            daily: null,
+            crime: null,
+            rob: null
+        }
     },
-    achievements: [{
-        id: String,
-        name: String,
-        description: String,
-        icon: String,
-        achievedAt: { type: Date, default: Date.now }
-    }],
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
+    
+    // Logros
+    achievements: {
+        type: DataTypes.JSON,
+        defaultValue: []
+    }
+}, {
+    timestamps: true, // Esto crea automáticamente createdAt y updatedAt
+    tableName: 'users'
 });
 
-// Actualizar la fecha de actualización antes de guardar
-userSchema.pre('save', function(next) {
-    this.updatedAt = new Date();
-    next();
-});
-
-// Método para agregar monedas
-userSchema.methods.addMoney = async function(amount, type = 'balance') {
+// Métodos de instancia
+User.prototype.addMoney = async function(amount, type = 'balance') {
     if (type === 'balance') {
         this.balance += amount;
     } else if (type === 'gems') {
@@ -66,8 +163,7 @@ userSchema.methods.addMoney = async function(amount, type = 'balance') {
     return this;
 };
 
-// Método para quitar monedas
-userSchema.methods.removeMoney = async function(amount, type = 'balance') {
+User.prototype.removeMoney = async function(amount, type = 'balance') {
     if (type === 'balance') {
         if (this.balance < amount) return false;
         this.balance -= amount;
@@ -82,52 +178,46 @@ userSchema.methods.removeMoney = async function(amount, type = 'balance') {
     return true;
 };
 
-// Método para agregar un ítem al inventario
-userSchema.methods.addItem = async function(item) {
-    const existingItem = this.inventory.find(i => i.itemId === item.itemId);
+User.prototype.addItem = async function(item) {
+    const inventory = this.inventory || [];
+    const existingItemIndex = inventory.findIndex(i => i.itemId === item.itemId);
     
-    if (existingItem) {
-        existingItem.amount += item.amount || 1;
+    if (existingItemIndex !== -1) {
+        inventory[existingItemIndex].amount += item.amount || 1;
     } else {
-        this.inventory.push({
+        inventory.push({
             ...item,
             amount: item.amount || 1,
             addedAt: new Date()
         });
     }
     
+    this.inventory = inventory;
     await this.save();
     return this;
 };
 
-// Método para quitar un ítem del inventario
-userSchema.methods.removeItem = async function(itemId, amount = 1) {
-    const itemIndex = this.inventory.findIndex(i => i.itemId === itemId);
+User.prototype.removeItem = async function(itemId, amount = 1) {
+    const inventory = this.inventory || [];
+    const itemIndex = inventory.findIndex(i => i.itemId === itemId);
     
     if (itemIndex === -1) return false;
     
-    if (this.inventory[itemIndex].amount > amount) {
-        this.inventory[itemIndex].amount -= amount;
+    if (inventory[itemIndex].amount > amount) {
+        inventory[itemIndex].amount -= amount;
     } else {
-        this.inventory.splice(itemIndex, 1);
+        inventory.splice(itemIndex, 1);
     }
     
+    this.inventory = inventory;
     await this.save();
     return true;
 };
 
-// Método para verificar si el usuario tiene un ítem
-userSchema.methods.hasItem = function(itemId, amount = 1) {
-    const item = this.inventory.find(i => i.itemId === itemId);
+User.prototype.hasItem = function(itemId, amount = 1) {
+    const inventory = this.inventory || [];
+    const item = inventory.find(i => i.itemId === itemId);
     return item && item.amount >= amount ? item : false;
 };
-
-// Índices para búsquedas rápidas
-userSchema.index({ userId: 1 });
-userSchema.index({ 'stats.level': -1, 'stats.xp': -1 });
-userSchema.index({ balance: -1 });
-userSchema.index({ 'inventory.itemId': 1 });
-
-const User = mongoose.model('User', userSchema);
 
 module.exports = User;

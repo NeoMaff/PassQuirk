@@ -1,4 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+// 💼 COMANDO WORK - Sistema de trabajo para ganar dinero
+const { SlashCommandBuilder } = require('discord.js');
+const { PassQuirkEmbed } = require('../../utils/embedStyles');
 const User = require('../../models/User');
 const { getRandomInt, formatNumber } = require('../../utils/helpers');
 
@@ -30,11 +32,11 @@ module.exports = {
             const now = new Date();
             
             // Buscar al usuario en la base de datos
-            let user = await User.findOne({ userId });
+            let user = await User.findOne({ where: { userId } });
             
             // Si el usuario no existe, crearlo
             if (!user) {
-                user = new User({
+                user = await User.create({
                     userId,
                     username: interaction.user.username,
                     balance: 1000,
@@ -55,11 +57,16 @@ module.exports = {
                 const remainingTime = WORK_COOLDOWN - (now - user.lastWork);
                 const minutes = Math.ceil(remainingTime / (1000 * 60));
                 
-                const cooldownEmbed = new EmbedBuilder()
-                    .setColor('#ff9900')
-                    .setTitle('⏳ Enfriamiento')
-                    .setDescription(`¡Espera un poco! Puedes trabajar de nuevo en **${minutes} minutos**.`)
-                    .setFooter({ text: 'El trabajo duro es importante, pero el descanso también.' });
+                const cooldownEmbed = new PassQuirkEmbed()
+                    .setTitle('⏳ Descanso del Héroe - PassQuirk RPG')
+                    .setDescription(`**¡Alto ahí, valiente aventurero!** ⚔️\n\nTu cuerpo necesita descansar después de la última misión. Podrás trabajar de nuevo en **${minutes} minutos**.\n\n*Incluso los héroes más poderosos necesitan recuperar energías.*`)
+                    .addFields(
+                        { name: '⚡ Estado', value: 'Recuperando energía', inline: true },
+                        { name: '⏰ Tiempo restante', value: `${minutes} minutos`, inline: true },
+                        { name: '💡 Consejo', value: 'Usa este tiempo para explorar otros comandos', inline: false }
+                    )
+                    .setImage('https://i.imgur.com/rest_banner.png')
+                    .setFooter({ text: '⚡ Sistema de Trabajo PassQuirk RPG | El descanso fortalece al héroe' });
                 
                 return interaction.reply({ embeds: [cooldownEmbed], ephemeral: true });
             }
@@ -91,17 +98,20 @@ module.exports = {
             await user.save();
             
             // Crear embed de respuesta
-            const workEmbed = new EmbedBuilder()
-                .setColor('#2ecc71')
-                .setTitle(`${job.emoji} ¡Trabajo completado!`)
-                .setDescription(`Has trabajado como **${job.name}** y ganaste **${formatNumber(totalEarnings)} monedas** y **${xpEarned} XP**!`)
+            const workEmbed = new PassQuirkEmbed()
+                .setTitle(`${job.emoji} ¡Misión Completada! - PassQuirk RPG`)
+                .setDescription(`**¡Excelente trabajo, héroe!** ⚔️\n\nHas completado tu misión como **${job.name}** con gran éxito. Tu dedicación ha sido recompensada generosamente.`)
+                .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
                 .addFields(
-                    { name: 'Ganancias base', value: `$${formatNumber(earnings)}`, inline: true },
-                    { name: 'Bonificación por nivel', value: `+$${formatNumber(levelBonus)}`, inline: true },
-                    { name: 'Total ganado', value: `**$${formatNumber(totalEarnings)}**`, inline: false },
+                    { name: '🪙 Recompensa Base', value: `${formatNumber(earnings)} monedas`, inline: true },
+                    { name: '⭐ Bonificación de Nivel', value: `+${formatNumber(levelBonus)} monedas`, inline: true },
+                    { name: '💰 Total Ganado', value: `**${formatNumber(totalEarnings)} monedas**`, inline: true },
+                    { name: '✨ Experiencia Ganada', value: `+${xpEarned} XP`, inline: true },
+                    { name: '📊 Progreso Actual', value: `Nivel ${user.stats.level} (${user.stats.xp}/${xpNeeded} XP)`, inline: true },
+                    { name: '🎯 Profesión', value: `${job.emoji} ${job.name}`, inline: true }
                 )
-                .setFooter({ text: `Nivel ${user.stats.level} • ${user.stats.xp}/${xpNeeded} XP` })
-                .setTimestamp();
+                .setImage('https://i.imgur.com/work_success_banner.png')
+                .setFooter({ text: `⚡ Sistema de Trabajo PassQuirk RPG | Nivel ${user.stats.level} • ${user.stats.xp}/${xpNeeded} XP` });
             
             if (levelUp) {
                 workEmbed.addFields({
@@ -116,10 +126,13 @@ module.exports = {
         } catch (error) {
             console.error('Error en el comando work:', error);
             
-            const errorEmbed = new EmbedBuilder()
-                .setColor('#ff0000')
-                .setTitle('❌ Error')
-                .setDescription('Ocurrió un error al procesar tu trabajo. Por favor, inténtalo de nuevo más tarde.');
+            const errorEmbed = new PassQuirkEmbed()
+                .setTitle('❌ Error en la Misión - PassQuirk RPG')
+                .setDescription('**¡Oh no!** Algo salió mal durante tu misión de trabajo. 😰\n\nPor favor, inténtalo de nuevo más tarde. Si el problema persiste, contacta a los administradores del reino.')
+                .addFields(
+                    { name: '🔧 Solución', value: 'Intenta usar el comando nuevamente en unos momentos', inline: false }
+                )
+                .setFooter({ text: '⚡ Sistema de Trabajo PassQuirk RPG | Error temporal' });
                 
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp({ embeds: [errorEmbed], ephemeral: true });

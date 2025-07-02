@@ -1,5 +1,6 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder } = require('discord.js');
+// 💰 COMANDO BALANCE - Mostrar saldo del usuario
+const { SlashCommandBuilder } = require('discord.js');
+const { PassQuirkEmbed } = require('../../utils/embedStyles');
 const User = require('../../models/User');
 
 module.exports = {
@@ -17,29 +18,33 @@ module.exports = {
             const isSelf = targetUser.id === interaction.user.id;
 
             // Buscar o crear el usuario en la base de datos
-            let user = await User.findOne({ userId: targetUser.id });
+            let user = await User.findOne({ where: { userId: targetUser.id } });
             
             if (!user) {
-                user = new User({
+                user = await User.create({
                     userId: targetUser.id,
                     username: targetUser.username,
                     balance: 1000, // Saldo inicial
                     lastDaily: null,
                     inventory: []
                 });
-                await user.save();
             }
 
-            const embed = new EmbedBuilder()
-                .setColor('#3498db')
-                .setTitle(isSelf ? '💰 Tu Saldo' : `💰 Saldo de ${targetUser.username}`)
+            const embed = new PassQuirkEmbed()
+                .setTitle(isSelf ? '💰 Tu Saldo - PassQuirk RPG' : `💰 Saldo de ${targetUser.username} - PassQuirk RPG`)
+                .setDescription(isSelf ? 
+                    '¡Aquí tienes tu estado financiero actual, héroe! 💪' : 
+                    `Estado financiero del aventurero ${targetUser.username}`)
                 .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
                 .addFields(
-                    { name: 'Monedas', value: `\🪙 ${user.balance}`, inline: true },
-                    { name: 'Gemas', value: `\💎 ${user.gems || 0}`, inline: true },
-                    { name: 'PG', value: `\✨ ${user.pg || 0}`, inline: true }
+                    { name: '🪙 Monedas de Oro', value: `**${user.balance.toLocaleString()}** monedas`, inline: true },
+                    { name: '💎 Gemas Mágicas', value: `**${(user.gems || 0).toLocaleString()}** gemas`, inline: true },
+                    { name: '✨ Puntos de Gloria (PG)', value: `**${(user.pg || 0).toLocaleString()}** PG`, inline: true },
+                    { name: '\u200B', value: '\u200B', inline: false },
+                    { name: '💡 Consejo del Mentor', value: 'Usa `/work` para ganar más monedas y `/shop` para equiparte mejor', inline: false }
                 )
-                .setFooter({ text: 'Usa /work para ganar más monedas' });
+                .setImage('https://i.imgur.com/economy_banner.png')
+                .setFooter({ text: '⚡ Sistema Económico PassQuirk RPG | ¡Tu aventura financiera te espera!' });
 
             await interaction.reply({ embeds: [embed] });
         } catch (error) {

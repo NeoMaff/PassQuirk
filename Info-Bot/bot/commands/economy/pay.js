@@ -1,3 +1,4 @@
+// 💸 COMANDO PAY - Transferir dinero entre usuarios
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const User = require('../../models/User');
 const { formatNumber } = require('../../utils/helpers');

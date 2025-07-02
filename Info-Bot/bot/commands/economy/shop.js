@@ -1,4 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
+// 🛒 COMANDO SHOP - Tienda del juego
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
+const { PassQuirkEmbed } = require('../../utils/embedStyles');
 const User = require('../../models/User');
 const { formatNumber, createProgressBar } = require('../../utils/helpers');
 
@@ -75,13 +77,17 @@ module.exports = {
         const selectedCategory = SHOP_CATEGORIES[category] || SHOP_CATEGORIES.consumibles;
         
         // Crear el embed principal de la tienda
-        const embed = new EmbedBuilder()
-            .setColor('#9b59b6')
-            .setTitle(`🛒 Tienda de ${interaction.guild.name}`)
-            .setDescription(`**${selectedCategory.name}**\n${selectedCategory.description}`)
-            .setThumbnail(interaction.guild.iconURL())
-            .setFooter({ text: `Usa los menús desplegables para navegar por la tienda` })
-            .setTimestamp();
+        const embed = new PassQuirkEmbed()
+            .setTitle(`🛒 Tienda Mágica de PassQuirk - ${selectedCategory.name}`)
+            .setDescription(`**¡Bienvenido a la tienda más épica del reino!** ⚔️\n\n${selectedCategory.description}\n\n*Aquí encontrarás todo lo necesario para tu aventura heroica.*`)
+            .setThumbnail('https://i.imgur.com/shop_icon.png')
+            .addFields(
+                { name: '💰 Moneda Aceptada', value: 'Monedas de Oro 🪙', inline: true },
+                { name: '🎯 Categoría Actual', value: selectedCategory.name, inline: true },
+                { name: '📦 Total de Objetos', value: `${selectedCategory.items.length} disponibles`, inline: true }
+            )
+            .setImage('https://i.imgur.com/shop_banner.png')
+            .setFooter({ text: '⚡ Tienda PassQuirk RPG | Usa los menús para navegar entre categorías' });
 
         // Añadir los objetos de la categoría seleccionada
         selectedCategory.items.forEach(item => {
@@ -144,5 +150,93 @@ module.exports = {
     // Obtener todas las categorías
     get categories() {
         return SHOP_CATEGORIES;
+    },
+    
+    // Función para manejar compras directas (consolidando funcionalidad de buy.js)
+    async handleDirectPurchase(interaction, itemId, amount) {
+        try {
+            // Buscar el ítem en todas las categorías
+            let item = null;
+            for (const category of Object.values(SHOP_CATEGORIES)) {
+                item = category.items.find(i => i.id === itemId);
+                if (item) break;
+            }
+            
+            if (!item) {
+                return interaction.reply({
+                    embeds: [new PassQuirkEmbed()
+                        .setTitle('❌ Objeto no encontrado')
+                        .setDescription('El objeto que buscas no existe en la tienda.')
+                        .setColor('#ff0000')
+                    ],
+                    ephemeral: true
+                });
+            }
+            
+            // Obtener datos del usuario
+            let userData = await User.findOne({ userId: interaction.user.id });
+            if (!userData) {
+                userData = new User({ userId: interaction.user.id });
+                await userData.save();
+            }
+            
+            const totalCost = item.price * amount;
+            
+            // Verificar si tiene suficiente dinero
+            if (userData.coins < totalCost) {
+                return interaction.reply({
+                    embeds: [new PassQuirkEmbed()
+                        .setTitle('💰 Fondos insuficientes')
+                        .setDescription(`Necesitas **$${formatNumber(totalCost)}** pero solo tienes **$${formatNumber(userData.coins)}**.
+
+*¡Completa más misiones para ganar monedas!*`)
+                        .setColor('#ff6b6b')
+                    ],
+                    ephemeral: true
+                });
+            }
+            
+            // Realizar la compra
+            userData.coins -= totalCost;
+            
+            // Agregar al inventario
+            const existingItem = userData.inventory.find(invItem => invItem.id === item.id);
+            if (existingItem) {
+                existingItem.quantity += amount;
+            } else {
+                userData.inventory.push({
+                    id: item.id,
+                    name: item.name,
+                    description: item.description,
+                    emoji: item.emoji,
+                    type: item.type,
+                    quantity: amount,
+                    price: item.price
+                });
+            }
+            
+            await userData.save();
+            
+            // Respuesta de éxito
+            const successEmbed = new PassQuirkEmbed()
+                .setTitle('✅ Compra realizada con éxito')
+                .setDescription(`Has comprado **${amount}x ${item.emoji} ${item.name}** por **$${formatNumber(totalCost)}**.
+
+💰 **Saldo restante:** $${formatNumber(userData.coins)}`)
+                .setColor('#00ff00');
+            
+            await interaction.reply({ embeds: [successEmbed], ephemeral: true });
+            
+        } catch (error) {
+            console.error('Error en compra directa:', error);
+            await interaction.reply({
+                embeds: [new PassQuirkEmbed()
+                    .setTitle('❌ Error en la compra')
+                    .setDescription('Ocurrió un error al procesar tu compra. Por favor, inténtalo de nuevo más tarde.')
+                    .setColor('#ff0000')
+                ],
+                ephemeral: true
+            });
+        }
     }
 };

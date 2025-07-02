@@ -1,3 +1,4 @@
+// ⏰ COMANDO CAMBIAR ZONA - Administración de zonas horarias
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { timeZones, getTimeZoneConfig } = require('../../utils/timeConfig');
 const { QuickDB } = require('quick.db');
