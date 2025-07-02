@@ -22,16 +22,31 @@ client.commands = new Collection();
 client.buttons = new Collection();
 client.selectMenus = new Collection();
 
+// Helper to read files recursively (only .js)
+function getFilesRecursive(dir) {
+    let results = [];
+    if (!fs.existsSync(dir)) return results;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const entryPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+            results = results.concat(getFilesRecursive(entryPath));
+        } else if (entry.name.endsWith('.js')) {
+            results.push(entryPath);
+        }
+    }
+    return results;
+}
+
 // Load commands
 async function loadCommands() {
     const commandsPath = path.join(__dirname, 'bot/commands');
-    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-    
-    for (const file of commandFiles) {
-        const filePath = path.join(commandsPath, file);
+    if (!fs.existsSync(commandsPath)) {
+        console.log('ℹ️ No commands directory found, skipping...');
+        return;
+    }
+    const commandFiles = getFilesRecursive(commandsPath);
+    for (const filePath of commandFiles) {
         const command = require(filePath);
-        
-        // Set a new item in the Collection with the key as the command name and the value as the exported module
         if ('data' in command && 'execute' in command) {
             client.commands.set(command.data.name, command);
             console.log(`✅ Command loaded: ${command.data.name}`);
@@ -44,6 +59,10 @@ async function loadCommands() {
 // Load events
 function loadEvents() {
     const eventsPath = path.join(__dirname, 'bot/events');
+    if (!fs.existsSync(eventsPath)) {
+        console.log('ℹ️ No events directory found, skipping...');
+        return;
+    }
     const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
     for (const file of eventFiles) {
@@ -117,17 +136,26 @@ async function deployCommands() {
         
         const commands = [];
         const commandsPath = path.join(__dirname, 'bot/commands');
-        const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
         
-        for (const file of commandFiles) {
-            const filePath = path.join(commandsPath, file);
-            const command = require(filePath);
-            
-            if ('data' in command) {
-                commands.push(command.data.toJSON());
-            }
+        // Check if commands directory exists
+        if (!fs.existsSync(commandsPath)) {
+            console.log('ℹ️ No commands directory found, skipping command deployment...');
+            return;
         }
         
+        const commandFiles = getFilesRecursive(commandsPath);
+        for (const filePath of commandFiles) {
+            try {
+                const command = require(filePath);
+                if ('data' in command) {
+                    commands.push(command.data.toJSON());
+                } else {
+                    console.log(`⚠️ Command at ${filePath} is missing 'data' property, skipping...`);
+                }
+            } catch (error) {
+                console.error(`❌ Error loading command from ${filePath}:`, error);
+            }
+        }
         const rest = new REST({ version: '10' }).setToken(config.bot.token);
         
         // Deploy commands to all guilds
@@ -159,10 +187,8 @@ async function init() {
         loadButtons();
         loadSelectMenus();
         
-        // Deploy commands if in development mode
-        if (config.environment === 'development') {
-            await deployCommands();
-        }
+        // Deploy slash commands en cada arranque
+        await deployCommands();
         
         // Log in to Discord
         await client.login(config.bot.token);
