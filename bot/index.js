@@ -2,8 +2,17 @@ require('dotenv').config();
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
+const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/passquirk-rpg', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log('✅ Conectado a MongoDB'))
+.catch(err => console.error('❌ Error conectando a MongoDB:', err));
 
 // Inicializar el cliente de Discord
 const client = new Client({
@@ -21,15 +30,32 @@ client.events = new Collection();
 client.buttons = new Collection();
 client.selectMenus = new Collection();
 
-// Cargar comandos
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+// Cargar comandos recursivamente
+function loadCommands(dir) {
+    const files = fs.readdirSync(dir);
 
-for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
-    client.commands.set(command.data.name, command);
+    for (const file of files) {
+        const filePath = path.join(dir, file);
+        const stat = fs.statSync(filePath);
+
+        if (stat.isDirectory()) {
+            loadCommands(filePath);
+        } else if (file.endsWith('.js')) {
+            try {
+                const command = require(filePath);
+                if (command.data && command.execute) {
+                    client.commands.set(command.data.name, command);
+                    console.log(`✅ Comando cargado: ${command.data.name}`);
+                }
+            } catch (error) {
+                console.error(`❌ Error cargando comando ${file}:`, error);
+            }
+        }
+    }
 }
+
+const commandsPath = path.join(__dirname, 'commands');
+loadCommands(commandsPath);
 
 // Cargar eventos
 const eventsPath = path.join(__dirname, 'events');

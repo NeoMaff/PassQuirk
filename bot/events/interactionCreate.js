@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
+const characterCreationHandlers = require('../handlers/characterCreation');
 
 module.exports = {
     name: 'interactionCreate',
@@ -15,13 +16,13 @@ module.exports = {
             try {
                 console.log(`Ejecutando comando: ${interaction.commandName} por ${interaction.user.tag}`);
                 await command.execute(interaction, client);
-                
+
                 // Registrar el comando en la base de datos
                 try {
                     const User = require('../models/User');
                     await User.findOneAndUpdate(
                         { userId: interaction.user.id },
-                        { 
+                        {
                             $inc: { 'stats.commands': 1 },
                             $set: { username: interaction.user.username }
                         },
@@ -30,16 +31,16 @@ module.exports = {
                 } catch (dbError) {
                     console.error('Error al actualizar estadísticas del usuario:', dbError);
                 }
-                
+
             } catch (error) {
                 console.error(`Error al ejecutar el comando ${interaction.commandName}:`, error);
-                
+
                 const errorEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
                     .setTitle('❌ Error')
                     .setDescription('Ocurrió un error al ejecutar el comando. Por favor, inténtalo de nuevo más tarde.')
                     .setFooter({ text: 'Si el problema persiste, contacta con el soporte.' });
-                
+
                 if (interaction.replied || interaction.deferred) {
                     await interaction.followUp({ embeds: [errorEmbed], ephemeral: true });
                 } else {
@@ -47,22 +48,27 @@ module.exports = {
                 }
             }
         }
-        
+
         // Manejar botones
         else if (interaction.isButton()) {
+            // Handle character creation flows
+            if (interaction.customId === 'character_name_modal') {
+                return await characterCreationHandlers.showNameModal(interaction);
+            }
+
             const button = client.buttons.get(interaction.customId);
-            
+
             if (!button) return;
-            
+
             try {
                 await button.execute(interaction, client);
             } catch (error) {
                 console.error(`Error al ejecutar el botón ${interaction.customId}:`, error);
-                
+
                 const errorEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
                     .setDescription('❌ Ocurrió un error al procesar esta acción.');
-                
+
                 if (interaction.replied || interaction.deferred) {
                     await interaction.followUp({ embeds: [errorEmbed], ephemeral: true });
                 } else {
@@ -70,27 +76,41 @@ module.exports = {
                 }
             }
         }
-        
+
         // Manejar menús desplegables
         else if (interaction.isStringSelectMenu()) {
+            // Handle character creation flows
+            if (interaction.customId === 'select_country') {
+                return await characterCreationHandlers.handleCountrySelection(interaction);
+            } else if (interaction.customId === 'select_class') {
+                return await characterCreationHandlers.handleClassSelection(interaction);
+            }
+
             const selectMenu = client.selectMenus.get(interaction.customId);
-            
+
             if (!selectMenu) return;
-            
+
             try {
                 await selectMenu.execute(interaction, client);
             } catch (error) {
                 console.error(`Error al ejecutar el menú ${interaction.customId}:`, error);
-                
+
                 const errorEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
                     .setDescription('❌ Ocurrió un error al procesar esta selección.');
-                
+
                 if (interaction.replied || interaction.deferred) {
                     await interaction.followUp({ embeds: [errorEmbed], ephemeral: true });
                 } else {
                     await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
                 }
+            }
+        }
+
+        // Manejar modales
+        else if (interaction.isModalSubmit()) {
+            if (interaction.customId === 'character_name_submit') {
+                return await characterCreationHandlers.handleNameSubmit(interaction);
             }
         }
     },
