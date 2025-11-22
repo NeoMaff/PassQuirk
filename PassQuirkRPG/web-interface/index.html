@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassQuirk RPG - Panel de Control</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* Colores base */
+            --color-gold: #FFD700;
+            --color-gold-dark: #E6C200;
+            --color-primary: #FFD700;
+            --color-primary-dark: #E6C200;
+
+            /* Fondo y contenido */
+            --bg-sidebar: #111827;
+            --bg-main: #0F172A;
+            --bg-card: #1E293B;
+            --bg-code: #1a2234;
+            --bg-hover: rgba(255, 215, 0, 0.1);
+
+            /* Texto */
+            --text-primary: #F3F4F6;
+            --text-secondary: #9CA3AF;
+            --text-muted: #6B7280;
+            --text-link: var(--color-primary);
+
+            /* Bordes */
+            --border-color: #2D3748;
+            --border-radius: 8px;
+
+            /* Tamaños */
+            --sidebar-width: 280px;
+            --header-height: 60px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Barra lateral */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-logo {
+            width: 32px;
+            height: 32px;
+            margin-right: 1rem;
+            border-radius: 4px;
+        }
+
+        .sidebar-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+            flex: 1;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 0 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin: 0.25rem 0;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background-color: var(--bg-hover);
+            color: var(--color-primary);
+            border-left: 3px solid var(--color-primary);
+            padding-left: calc(1rem - 3px);
+        }
+
+        .nav-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Contenido principal */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            min-height: 100vh;
+        }
+
+        .header {
+            height: var(--header-height);
+            background-color: var(--bg-main);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-card);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            width: 300px;
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            width: 100%;
+            margin-left: 0.5rem;
+            outline: none;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+
+        .invite-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--color-primary);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .invite-btn:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        /* Contenido */
+        .content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-icon {
+            color: var(--color-primary);
+            font-size: 1.2rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* PassCoin Image */
+        .passcoin-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            /* Rounded borders as requested */
+            border: 2px solid var(--color-gold);
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .economy-display {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        /* Login Form */
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            text-align: center;
+            background-color: var(--bg-card);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Utilidades */
+        .text-gold {
+            color: var(--color-gold);
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barra lateral -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="assets/images/logo.png" alt="PassQuirk RPG" class="sidebar-logo">
+            <div class="sidebar-title">PassQuirk RPG</div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Principal</div>
+                <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('profile')">
+                    <i class="fas fa-user"></i> Perfil
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('economy')">
+                    <i class="fas fa-coins"></i> Economía
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Documentación</div>
+                <a href="docs.html" class="nav-item">
+                    <i class="fas fa-book"></i> Ver Documentación
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            PassQuirk RPG © 2023
+        </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+        <header class="header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar jugador (ID)..." id="player-search">
+            </div>
+
+            <div class="header-actions">
+                <button class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID_HERE&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fcallback&response_type=code&scope=identify%20guilds"
+                    class="invite-btn" id="discord-login-btn">
+                    <i class="fab fa-discord"></i> Iniciar Sesión con Discord
+                </a>
+                <a href="https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID_HERE&permissions=8&scope=bot%20applications.commands"
+                    class="invite-btn" id="invite-bot-btn" style="margin-left: 0.5rem; background-color: #5865F2;">
+                    <i class="fas fa-robot"></i> Añadir Bot
+                </a>
+            </div>
+        </header>
+
+        <div class="content" id="main-view">
+            <!-- Dashboard View -->
+            <div id="dashboard-view">
+                <h1 class="page-title">Panel de Control</h1>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Estado del Servidor</span>
+                            <i class="fas fa-server card-icon"></i>
+                        </div>
+                        <div class="stat-value" id="server-status">Online</div>
+                        <div class="stat-label">Uptime: <span id="uptime">0s</span></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Jugadores Activos</span>
+                            <i class="fas fa-users card-icon"></i>
+                        </div>
+                        <div class="stat-value" id="player-count">0</div>
+                        <div class="stat-label">En el último mes</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile View (Hidden by default) -->
+            <div id="profile-view" class="hidden">
+                <h1 class="page-title">Perfil de Jugador</h1>
+                <div id="player-data-container">
+                    <p class="text-muted">Introduce un ID de usuario en el buscador o inicia sesión.</p>
+                </div>
+            </div>
+
+            <!-- Economy View (Hidden by default) -->
+            <div id="economy-view" class="hidden">
+                <h1 class="page-title">Economía</h1>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Tus Finanzas</span>
+                    </div>
+                    <div class="economy-display">
+                        <img src="../documentation/Doc-Oficial/Imagenes%20-%20Dise%C3%B1o/Otros%20Aspectos%20del%20Juego/PassCoin.png"
+                            alt="PassCoin" class="passcoin-img">
+                        <div>
+                            <div class="stat-value text-gold" id="economy-passcoins">0</div>
+                            <div class="stat-label">PassCoins</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Simple Navigation
+        function showSection(sectionId) {
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('profile-view').classList.add('hidden');
+            document.getElementById('economy-view').classList.add('hidden');
+
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            if (sectionId === 'dashboard') {
+                document.getElementById('dashboard-view').classList.remove('hidden');
+                // Highlight nav item logic here if needed
+            } else if (sectionId === 'profile') {
+                document.getElementById('profile-view').classList.remove('hidden');
+            } else if (sectionId === 'economy') {
+                document.getElementById('economy-view').classList.remove('hidden');
+            }
+        }
+
+        // Fetch Stats
+        async function fetchStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+                document.getElementById('server-status').textContent = data.online ? 'Online' : 'Offline';
+                document.getElementById('player-count').textContent = data.players;
+                document.getElementById('uptime').textContent = Math.floor(data.uptime) + 's';
+            } catch (e) {
+                console.error('Error fetching stats:', e);
+            }
+        }
+
+        // Search Player
+        document.getElementById('player-search').addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter') {
+                const userId = e.target.value;
+                if (!userId) return;
+
+                try {
+                    const response = await fetch(`/api/player/${userId}`);
+                    const player = await response.json();
+
+                    if (player.error) {
+                        alert('Jugador no encontrado');
+                        return;
+                    }
+
+                    // Update Profile View
+                    const html = `
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <span class="card-title">${player.username}</span>
+                                <span class="text-muted">Nivel ${player.level}</span>
+                            </div>
+                            <div class="stat-label">Clase: ${player.class}</div>
+                            <div class="stat-label">Zona: ${player.exploration?.currentZone || 'Desconocida'}</div>
+                        </div>
+                    `;
+                    document.getElementById('player-data-container').innerHTML = html;
+
+                    // Update Economy View
+                    document.getElementById('economy-passcoins').textContent = player.economy?.passcoins || 0;
+
+                    showSection('profile');
+                } catch (err) {
+                    console.error(err);
+                    alert('Error al buscar jugador');
+                }
+            }
+        });
+
+        // Init
+        fetchStats();
+        setInterval(fetchStats, 30000);
+    </script>
+</body>
+
+</html>

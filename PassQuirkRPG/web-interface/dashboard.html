@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassQuirk - Panel de Control</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="css/dashboard.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="bg-gray-800 text-white w-64 flex-shrink-0">
+            <div class="p-4 border-b border-gray-700">
+                <h1 class="text-xl font-bold">PassQuirk</h1>
+                <p class="text-gray-400 text-sm">Panel de Administración</p>
+            </div>
+            <nav class="mt-4">
+                <div class="px-4 py-2 text-gray-400 uppercase text-xs font-semibold">Principal</div>
+                <a href="#" class="flex items-center px-4 py-3 text-white bg-gray-700">
+                    <i class="fas fa-tachometer-alt w-5 mr-3"></i>
+                    Dashboard
+                </a>
+                
+                <div class="px-4 py-2 text-gray-400 uppercase text-xs font-semibold mt-4">Economía</div>
+                <a href="#economy" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700">
+                    <i class="fas fa-coins w-5 mr-3"></i>
+                    Configuración
+                </a>
+                <a href="#shops" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700">
+                    <i class="fas fa-store w-5 mr-3"></i>
+                    Tiendas
+                </a>
+                
+                <div class="px-4 py-2 text-gray-400 uppercase text-xs font-semibold mt-4">Comandos</div>
+                <a href="#commands" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700">
+                    <i class="fas fa-terminal w-5 mr-3"></i>
+                    Ejecutar Comandos
+                </a>
+                <a href="#permissions" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700">
+                    <i class="fas fa-user-shield w-5 mr-3"></i>
+                    Permisos
+                </a>
+                
+                <div class="px-4 py-2 text-gray-400 uppercase text-xs font-semibold mt-4">Configuración</div>
+                <a href="#settings" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700">
+                    <i class="fas fa-cog w-5 mr-3"></i>
+                    Ajustes del Bot
+                </a>
+                <a href="#game-mode" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700">
+                    <i class="fas fa-gamepad w-5 mr-3"></i>
+                    Modo de Juego
+                </a>
+            </nav>
+            
+            <div class="absolute bottom-0 w-64 p-4 border-t border-gray-700">
+                <div class="flex items-center">
+                    <img src="https://cdn.discordapp.com/avatars/YOUR_BOT_ID/YOUR_AVATAR.png" class="w-10 h-10 rounded-full" alt="Bot Avatar">
+                    <div class="ml-3">
+                        <p class="text-sm font-medium">PassQuirk Bot</p>
+                        <p class="text-xs text-gray-400">En línea</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow">
+                <div class="flex justify-between items-center p-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Panel de Control</h2>
+                    <div class="flex items-center space-x-4">
+                        <button class="p-2 text-gray-600 hover:text-gray-900">
+                            <i class="fas fa-bell"></i>
+                        </button>
+                        <div class="relative">
+                            <button id="user-menu" class="flex items-center space-x-2 focus:outline-none">
+                                <span class="text-gray-700">Admin</span>
+                                <img src="https://cdn.discordapp.com/avatars/YOUR_USER_ID/YOUR_AVATAR.png" class="w-8 h-8 rounded-full" alt="User Avatar">
+                            </button>
+                            <!-- Dropdown Menu -->
+                            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Configuración</a>
+                                <div class="border-t border-gray-200 my-1"></div>
+                                <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Cerrar Sesión</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <main class="p-6">
+                <!-- Welcome Card -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">¡Bienvenido al Panel de Control de PassQuirk!</h2>
+                    <p class="text-gray-600">Gestiona tu servidor y configura el bot según tus necesidades.</p>
+                </div>
+                
+                <!-- Stats Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm font-medium">Miembros</p>
+                                <p class="text-2xl font-bold">1,234</p>
+                            </div>
+                            <i class="fas fa-users text-3xl opacity-50"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm font-medium">Economía Total</p>
+                                <p class="text-2xl font-bold">5,678 PC</p>
+                            </div>
+                            <i class="fas fa-coins text-3xl opacity-50"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm font-medium">Actividad Hoy</p>
+                                <p class="text-2xl font-bold">89%</p>
+                            </div>
+                            <i class="fas fa-chart-line text-3xl opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Acciones Rápidas</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button class="flex items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-plus-circle text-blue-500 text-xl mr-2"></i>
+                            <span>Crear Tienda</span>
+                        </button>
+                        <button class="flex items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-gem text-yellow-500 text-xl mr-2"></i>
+                            <span>Agregar Moneda</span>
+                        </button>
+                        <button class="flex items-center justify-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-shield-alt text-green-500 text-xl mr-2"></i>
+                            <span>Gestionar Permisos</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Actividad Reciente</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-2 rounded-full">
+                                <i class="fas fa-coins text-blue-500"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium">Transacción completada</p>
+                                <p class="text-xs text-gray-500">Usuario123 compró Espada Legendaria por 500 PC</p>
+                                <p class="text-xs text-gray-400 mt-1">Hace 5 minutos</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-green-100 p-2 rounded-full">
+                                <i class="fas fa-user-plus text-green-500"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium">Nuevo miembro</p>
+                                <p class="text-xs text-gray-500">Usuario456 se unió al servidor</p>
+                                <p class="text-xs text-gray-400 mt-1">Hace 1 hora</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 p-2 rounded-full">
+                                <i class="fas fa-cog text-purple-500"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium">Configuración actualizada</p>
+                                <p class="text-xs text-gray-500">Se modificó la configuración del sistema de economía</p>
+                                <p class="text-xs text-gray-400 mt-1">Hace 3 horas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

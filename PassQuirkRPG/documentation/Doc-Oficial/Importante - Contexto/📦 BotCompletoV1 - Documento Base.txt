@@ -1,0 +1,90 @@
+📦 BotCompletoV1 - Documento Base (Actualizado)
+🧭 Propósito del Documento
+Este archivo forma parte de la carpeta PassQuirk - DataBase > BotCompletoV1 y es la versión oficial y reestructurada del bot PassQuirk RPG. Toda la información aquí tiene prioridad sobre versiones anteriores.
+
+🧨 CAMBIO IMPORTANTE EN LA ESTRUCTURA DE INICIO
+El bot ya no se inicia con múltiples comandos (/start, /tutorial, mención).
+
+✅ Nuevo Inicio ÚNICO: /passquirkrpg
+Este comando es el punto de partida exclusivo del juego.
+
+Muestra un embed visual llamativo con:
+
+🐲 Botón: "Iniciar Aventura" (amarillo brillante)
+
+👤 Guía Inicial y Creación del Personaje (fusionada con Tutorial)
+Al pulsar "Iniciar Aventura", se activa el flujo guiado por el NPC ElSabio 🧙‍♂️.
+
+⚠️ Importante: Si el bot no tiene la imagen de ElSabio, debe pedírsela al desarrollador. Nombre: NPC - ElSabio
+
+✍️ ElSabio guía al jugador paso a paso:
+No eres un invitado. Eres el protagonista.
+Crea tu personaje y empieza tu aventura.
+Diálogo con el jugador mediante botones/categorias/interfaz de datos para crear su personaje
+
+Aquí puedes:
+
+👤 Crear tu personaje entero (Nombre, Avatar, descripción, clase...)
+Y la creacion del personaje sigue:
+
+🧩 Elegir entre las clases
+
+Elegir uno de los reinos:
+
+🏰 Los 3 Reinos Principales
+🔴 Akai – Reino de la fuerza, la guerra y la resistencia.
+
+🟢 Say – Reino de la magia, el conocimiento y lo ancestral.
+
+🟡 Masai – Reino del comercio, la alquimia y la diplomacia.
+
+(Hype para el jugador)
+⚔️ Tu destino empieza AHORA
+🔸 Combate contra monstruos.
+🔸 Construye tu propio gremio.
+🔸 Compra, vende, comercia y evoluciona.
+🔸 Escala en el sistema de rangos.
+🔸 Desbloquea Quirks y hazte leyenda.
+
+No eres un invitado. Eres el protagonista.
+🔥 Crea tu personaje y empieza tu aventura. Ya.
+
+🗡️ Tutorial de Combate Interactivo
+Escenario tipo Pokémon, combate por turnos contra un enemigo: Slime Verde 🧪
+
+🔁 Etapas del tutorial:
+Quirk Inicial Aleatorio:
+El jugador recibe un Quirk común aleatorio con una habilidad desbloqueada mediante su clase elegida.
+
+Turno 1 del jugador:
+
+Botones: Atacar / Defender
+
+Turno del enemigo:
+
+El slime ataca automáticamente.
+
+Inventario:
+
+Botón: Usar poción de vida
+
+Turno 2 del jugador:
+
+Botón: Ataque Final → Victoria
+
+🎮 Estilo visual por turnos con barra de vida, daño visual y botones embellecidos.
+
+🎉 Cierre del Tutorial
+El jugador llega a Space Central, ciudad base del universo PassQuirk.
+
+✨ Mensaje final:
+"¡Has completado el tutorial! Tu aventura comienza ahora desde Space Central."
+
+📍 Botones disponibles:
+
+Crear Personaje (si no lo hizo antes)
+
+Explorar
+
+Ayuda
+

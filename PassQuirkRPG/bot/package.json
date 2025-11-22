@@ -1,0 +1,45 @@
+{
+  "name": "passquirk-rpg-bot",
+  "version": "2.0.0",
+  "description": "Bot de Discord RPG PassQuirk - Sistema completo de juego de rol",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "node deploy-commands.js",
+    "backup": "node scripts/backup.js",
+    "restore": "node scripts/restore.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "rpg",
+    "passquirk",
+    "game",
+    "adventure",
+    "combat",
+    "exploration"
+  ],
+  "author": "PassQuirk Team",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "discord-api-types": "^0.37.61"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/passquirk/rpg-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/passquirk/rpg-bot/issues"
+  },
+  "homepage": "https://github.com/passquirk/rpg-bot#readme"
+}

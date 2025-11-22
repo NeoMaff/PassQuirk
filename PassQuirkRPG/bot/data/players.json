@@ -1,0 +1,77 @@
+{
+  "1012429271693807696": {
+    "userId": "1012429271693807696",
+    "username": "ciomaff",
+    "level": 1,
+    "experience": 0,
+    "experienceToNext": 100,
+    "passquirk": 10,
+    "class": "sombra",
+    "stats": {
+      "hp": 100,
+      "mp": 50,
+      "attack": 10,
+      "defense": 8,
+      "speed": 5,
+      "intelligence": 5,
+      "strength": 5,
+      "wisdom": 5,
+      "creativity": 5,
+      "technique": 5,
+      "resistance": 5,
+      "knowledge": 5
+    },
+    "quirks": [
+      {
+        "id": 10,
+        "name": "Caos",
+        "description": "Poder inestable capaz de causar destrucción masiva.",
+        "compatibleClasses": [
+          "🔓 Todas las clases (Universal)"
+        ],
+        "element": "Universal",
+        "rarity": "Mítico",
+        "emoji": "🌀",
+        "acquiredAt": "2025-11-21T12:26:28.890Z",
+        "level": 1,
+        "experience": 0
+      }
+    ],
+    "inventory": {
+      "items": {},
+      "equipment": {
+        "weapon": null,
+        "armor": null,
+        "accessory": null
+      },
+      "gold": 100
+    },
+    "activities": {
+      "total": 0,
+      "today": 0,
+      "streak": 0,
+      "lastActivity": null,
+      "history": []
+    },
+    "exploration": {
+      "currentZone": "say",
+      "unlockedZones": [
+        "say",
+        "Space Central"
+      ],
+      "discoveries": [],
+      "explorationTime": 0
+    },
+    "battle": {
+      "wins": 0,
+      "losses": 0,
+      "currentBattle": null,
+      "battleHistory": []
+    },
+    "achievements": [],
+    "realPower": 0,
+    "rank": "Héroe en Entrenamiento",
+    "createdAt": "2025-07-02T19:09:52.610Z",
+    "lastSeen": "2025-11-21T12:26:28.891Z"
+  }
+}

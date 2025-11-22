@@ -1,0 +1,129 @@
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config();
+
+// Crear cliente de Discord
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers
+    ]
+});
+
+// Colecciones para comandos y eventos
+client.commands = new Collection();
+client.buttons = new Collection();
+client.selectMenus = new Collection();
+
+// Cargar comandos
+const commandsPath = path.join(__dirname, 'commands');
+if (fs.existsSync(commandsPath)) {
+    const commandFolders = fs.readdirSync(commandsPath);
+    
+    for (const folder of commandFolders) {
+        const folderPath = path.join(commandsPath, folder);
+        if (fs.statSync(folderPath).isDirectory()) {
+            const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.js'));
+            
+            for (const file of commandFiles) {
+                const filePath = path.join(folderPath, file);
+                const command = require(filePath);
+                
+                if ('data' in command && 'execute' in command) {
+                    client.commands.set(command.data.name, command);
+                    console.log(`✅ Comando cargado: ${command.data.name}`);
+                } else {
+                    console.log(`⚠️ El comando en ${filePath} no tiene las propiedades requeridas.`);
+                }
+            }
+        }
+    }
+}
+
+// Cargar eventos
+const eventsPath = path.join(__dirname, 'events');
+if (fs.existsSync(eventsPath)) {
+    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+    
+    for (const file of eventFiles) {
+        const filePath = path.join(eventsPath, file);
+        const event = require(filePath);
+        
+        if (event.once) {
+            client.once(event.name, (...args) => event.execute(...args));
+        } else {
+            client.on(event.name, (...args) => event.execute(...args));
+        }
+        console.log(`✅ Evento cargado: ${event.name}`);
+    }
+}
+
+// Cargar manejadores de botones
+const buttonsPath = path.join(__dirname, 'buttons');
+if (fs.existsSync(buttonsPath)) {
+    const buttonFiles = fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'));
+    
+    for (const file of buttonFiles) {
+        const filePath = path.join(buttonsPath, file);
+        const button = require(filePath);
+        
+        if ('customId' in button && 'execute' in button) {
+            client.buttons.set(button.customId, button);
+            console.log(`✅ Botón cargado: ${button.customId}`);
+        }
+    }
+}
+
+// Cargar manejadores de menús desplegables
+const selectMenusPath = path.join(__dirname, 'selectMenus');
+if (fs.existsSync(selectMenusPath)) {
+    const selectMenuFiles = fs.readdirSync(selectMenusPath).filter(file => file.endsWith('.js'));
+    
+    for (const file of selectMenuFiles) {
+        const filePath = path.join(selectMenusPath, file);
+        const selectMenu = require(filePath);
+        
+        if ('customId' in selectMenu && 'execute' in selectMenu) {
+            client.selectMenus.set(selectMenu.customId, selectMenu);
+            console.log(`✅ Menú desplegable cargado: ${selectMenu.customId}`);
+        }
+    }
+}
+
+// Conectar a MongoDB
+if (process.env.MONGODB_URI) {
+    mongoose.connect(process.env.MONGODB_URI)
+        .then(() => {
+            console.log('🗄️ Conectado a MongoDB');
+        })
+        .catch(err => {
+            console.error('❌ Error conectando a MongoDB:', err);
+        });
+} else {
+    console.warn('⚠️ MONGODB_URI no está configurado en el archivo .env');
+}
+
+// Manejo de errores
+process.on('unhandledRejection', error => {
+    console.error('❌ Error no manejado:', error);
+});
+
+process.on('uncaughtException', error => {
+    console.error('❌ Excepción no capturada:', error);
+    process.exit(1);
+});
+
+// Iniciar el bot
+client.login(process.env.DISCORD_TOKEN)
+    .then(() => {
+        console.log('🚀 Bot iniciado correctamente');
+    })
+    .catch(err => {
+        console.error('❌ Error al iniciar el bot:', err);
+    });
+
+module.exports = client;

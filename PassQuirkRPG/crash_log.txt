@@ -1,0 +1,26 @@
+[2025-11-20T20:03:00.628Z] UncaughtException: Error: Cannot utilize the DAVE protocol as the @snazzah/davey package has not been installed.
+- Use the generateDependencyReport() function for more information.
+
+    at new DAVESession (E:\PassQuirk\PassQuirkRPG\bot\node_modules\@discordjs\voice\dist\index.js:746:13)
+    at Networking.createDaveSession (E:\PassQuirk\PassQuirkRPG\bot\node_modules\@discordjs\voice\dist\index.js:1467:21)
+    at Networking.onWsPacket (E:\PassQuirk\PassQuirkRPG\bot\node_modules\@discordjs\voice\dist\index.js:1602:20)
+    at VoiceWebSocket.emit (node:events:530:35)
+    at VoiceWebSocket.onMessage (E:\PassQuirk\PassQuirkRPG\bot\node_modules\@discordjs\voice\dist\index.js:1239:10)
+    at VoiceWebSocket.ws.onmessage (E:\PassQuirk\PassQuirkRPG\bot\node_modules\@discordjs\voice\dist\index.js:1182:39)
+    at callListener (E:\PassQuirk\PassQuirkRPG\bot\node_modules\ws\lib\event-target.js:290:14)
+    at WebSocket.onMessage (E:\PassQuirk\PassQuirkRPG\bot\node_modules\ws\lib\event-target.js:209:9)
+    at WebSocket.emit (node:events:518:28)
+    at Receiver.receiverOnMessage (E:\PassQuirk\PassQuirkRPG\bot\node_modules\ws\lib\websocket.js:1220:20)
+[2025-11-20T20:34:59.739Z] UncaughtException: Error: Cannot utilize the DAVE protocol as the @snazzah/davey package has not been installed.
+- Use the generateDependencyReport() function for more information.
+
+    at new DAVESession (E:\PassQuirk\PassQuirkRPG\node_modules\@discordjs\voice\dist\index.js:746:13)
+    at Networking.createDaveSession (E:\PassQuirk\PassQuirkRPG\node_modules\@discordjs\voice\dist\index.js:1467:21)
+    at Networking.onWsPacket (E:\PassQuirk\PassQuirkRPG\node_modules\@discordjs\voice\dist\index.js:1602:20)
+    at VoiceWebSocket.emit (node:events:530:35)
+    at VoiceWebSocket.onMessage (E:\PassQuirk\PassQuirkRPG\node_modules\@discordjs\voice\dist\index.js:1239:10)
+    at VoiceWebSocket.ws.onmessage (E:\PassQuirk\PassQuirkRPG\node_modules\@discordjs\voice\dist\index.js:1182:39)
+    at callListener (E:\PassQuirk\PassQuirkRPG\node_modules\ws\lib\event-target.js:290:14)
+    at WebSocket.onMessage (E:\PassQuirk\PassQuirkRPG\node_modules\ws\lib\event-target.js:209:9)
+    at WebSocket.emit (node:events:518:28)
+    at Receiver.receiverOnMessage (E:\PassQuirk\PassQuirkRPG\node_modules\ws\lib\websocket.js:1220:20)

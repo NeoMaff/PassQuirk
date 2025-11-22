@@ -1,0 +1,16 @@
+# 🌟 PassQuirks
+
+| 🔢 Nº | 🌀 **Nombre del PassQuirk**    | 💥 **Descripción del Poder**                                                                                                                                    | 🧑‍🎓 **Clases Compatibles**        |
+| ----- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| 1     | **Fénix**                      | Potencia habilidades de regeneración y fuego.                                                                                                                   | 🧙‍♂️ Mago, 🛡️ Guerrero            |
+| 2     | **Vendaval**                   | Otorga velocidad extrema y control del viento.                                                                                                                  | 🏹 Arquero, 🥷 Ninja                |
+| 3     | **Tierra**                     | Control masivo de rocas y tierra.                                                                                                                               | ⚔️ Espadachín, 🛡️ Guerrero         |
+| 4     | **Oscuridad**                  | Absorbe luz, permite invisibilidad.                                                                                                                             | 🥷 Ninja, 🧙‍♂️ Mago                |
+| 5     | **Bestia**                     | Fuerza y resistencia física extremas.                                                                                                                           | 🛡️ Guerrero, ⚔️ Espadachín         |
+| 6     | **Trueno**                     | Control de rayos y velocidad mejorada.                                                                                                                          | 🏹 Arquero, 🧙‍♂️ Mago              |
+| 7     | **Dragón**                     | Fuerza y defensa dracónica.                                                                                                                                     | 🛡️ Guerrero, ⚔️ Espadachín         |
+| 8     | **Agua**                       | Control de agua y curación de aliados.                                                                                                                          | 🧙‍♂️ Mago, 🏹 Arquero              |
+| 9     | **Vacío**                      | Control gravitacional y manipulación del espacio.                                                                                                               | 🥷 Ninja, 🧙‍♂️ Mago                |
+| 10    | **Caos**                       | Poder inestable capaz de causar destrucción masiva.                                                                                                             | 🔓 **Todas las clases (Universal)** |
+| 11    | <h4> <strong>Luz</strong></h4> | Poder inestable capaz de causar destrucción masiva. Su energía brilla intensamente, pero corre el riesgo de volverse contra su portador si no se controla bien. | 🔓 **Todas las clases (Universal)** |
+
