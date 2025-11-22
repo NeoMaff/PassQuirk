@@ -1,13 +1,46 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    userId: { type: String, required: true, unique: true },
+    userId: { type: String, unique: true, sparse: true },
+    discordId: { type: String, required: true, unique: true },
     username: { type: String, required: true },
     balance: { type: Number, default: 1000 },
     gems: { type: Number, default: 0 },
     pg: { type: Number, default: 0 },
     lastDaily: { type: Date },
     lastWork: { type: Date },
+
+    // Sistema de Tutorial
+    tutorialCompleted: { type: Boolean, default: false },
+    tutorialStep: { type: Number, default: 0 },
+
+    // Sistema de Personaje
+    character: {
+        name: String,
+        gender: String,
+        class: String,
+        level: { type: Number, default: 1 },
+        xp: { type: Number, default: 0 },
+        xpToNext: { type: Number, default: 100 },
+        stats: {
+            fuerza: { type: Number, default: 5 },
+            destreza: { type: Number, default: 5 },
+            inteligencia: { type: Number, default: 5 },
+            constitucion: { type: Number, default: 5 },
+            suerte: { type: Number, default: 5 },
+            hp: { type: Number, default: 50 },
+            maxHp: { type: Number, default: 50 },
+            pa: { type: Number, default: 10 },
+            maxPa: { type: Number, default: 10 }
+        },
+        skills: [String],
+        equipment: {
+            weapon: { type: String, default: null },
+            armor: { type: String, default: null },
+            accessory: { type: String, default: null }
+        }
+    },
+
     inventory: [{
         itemId: String,
         name: String,
@@ -15,6 +48,7 @@ const userSchema = new mongoose.Schema({
         value: Number,
         amount: { type: Number, default: 1 },
         type: String,
+        emoji: String,
         rarity: { type: String, default: 'common' },
         createdAt: { type: Date, default: Date.now }
     }],
@@ -23,7 +57,10 @@ const userSchema = new mongoose.Schema({
         xp: { type: Number, default: 0 },
         messages: { type: Number, default: 0 },
         commands: { type: Number, default: 0 },
-        voiceMinutes: { type: Number, default: 0 }
+        voiceMinutes: { type: Number, default: 0 },
+        battles: { type: Number, default: 0 },
+        victories: { type: Number, default: 0 },
+        playtime: { type: Number, default: 0 }
     },
     settings: {
         notifications: { type: Boolean, default: true },

@@ -4,6 +4,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 
 // Inicializar el cliente de Discord
 const client = new Client({
@@ -14,6 +15,12 @@ const client = new Client({
         GatewayIntentBits.GuildVoiceStates,
     ],
 });
+
+// Conectar a MongoDB
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/passquirk';
+mongoose.connect(MONGODB_URI)
+    .then(() => console.log('✅ Conectado a MongoDB'))
+    .catch(err => console.error('❌ Error al conectar a MongoDB:', err));
 
 // Colecciones para comandos y eventos
 client.commands = new Collection();

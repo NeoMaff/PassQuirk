@@ -51,18 +51,48 @@ module.exports = {
         // Manejar botones
         else if (interaction.isButton()) {
             const button = client.buttons.get(interaction.customId);
-            
-            if (!button) return;
-            
+
+            // Si no hay un handler registrado, intenta manejar botones de comandos especiales
+            if (!button) {
+                // Manejar botones del tutorial
+                if (interaction.customId.startsWith('tutorial_')) {
+                    const tutorialCommand = client.commands.get('tutorial');
+                    if (tutorialCommand && tutorialCommand.handleButton) {
+                        try {
+                            await tutorialCommand.handleButton(interaction);
+                            return;
+                        } catch (error) {
+                            console.error('Error handling tutorial button:', error);
+                        }
+                    }
+                }
+
+                // Manejar botones de creación de personaje
+                if (interaction.customId.startsWith('character_') ||
+                    interaction.customId.startsWith('gender_')) {
+                    const characterCommand = client.commands.get('crearpersonaje');
+                    if (characterCommand && characterCommand.handleButton) {
+                        try {
+                            await characterCommand.handleButton(interaction);
+                            return;
+                        } catch (error) {
+                            console.error('Error handling character button:', error);
+                        }
+                    }
+                }
+
+                return;
+            }
+
             try {
                 await button.execute(interaction, client);
             } catch (error) {
                 console.error(`Error al ejecutar el botón ${interaction.customId}:`, error);
-                
+
                 const errorEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
                     .setDescription('❌ Ocurrió un error al procesar esta acción.');
-                
+
                 if (interaction.replied || interaction.deferred) {
                     await interaction.followUp({ embeds: [errorEmbed], ephemeral: true });
                 } else {
@@ -70,26 +100,58 @@ module.exports = {
                 }
             }
         }
-        
+
         // Manejar menús desplegables
         else if (interaction.isStringSelectMenu()) {
             const selectMenu = client.selectMenus.get(interaction.customId);
-            
-            if (!selectMenu) return;
-            
+
+            // Si no hay un handler registrado, intenta manejar select menus de comandos especiales
+            if (!selectMenu) {
+                // Manejar select menu de creación de personaje
+                if (interaction.customId.startsWith('class_select_')) {
+                    const characterCommand = client.commands.get('crearpersonaje');
+                    if (characterCommand && characterCommand.handleSelectMenu) {
+                        try {
+                            await characterCommand.handleSelectMenu(interaction);
+                            return;
+                        } catch (error) {
+                            console.error('Error handling class selection:', error);
+                        }
+                    }
+                }
+
+                return;
+            }
+
             try {
                 await selectMenu.execute(interaction, client);
             } catch (error) {
                 console.error(`Error al ejecutar el menú ${interaction.customId}:`, error);
-                
+
                 const errorEmbed = new EmbedBuilder()
                     .setColor('#ff0000')
                     .setDescription('❌ Ocurrió un error al procesar esta selección.');
-                
+
                 if (interaction.replied || interaction.deferred) {
                     await interaction.followUp({ embeds: [errorEmbed], ephemeral: true });
                 } else {
                     await interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+                }
+            }
+        }
+
+        // Manejar modales
+        else if (interaction.isModalSubmit()) {
+            // Manejar modal de creación de personaje
+            if (interaction.customId === 'character_name_modal') {
+                const characterCommand = client.commands.get('crearpersonaje');
+                if (characterCommand && characterCommand.handleModal) {
+                    try {
+                        await characterCommand.handleModal(interaction);
+                        return;
+                    } catch (error) {
+                        console.error('Error handling character name modal:', error);
+                    }
                 }
             }
         }
